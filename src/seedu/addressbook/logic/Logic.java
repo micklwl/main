@@ -5,7 +5,6 @@ import seedu.addressbook.commands.CommandResult;
 import seedu.addressbook.data.AddressBook;
 import seedu.addressbook.data.person.ReadOnlyPerson;
 import seedu.addressbook.parser.Parser;
-import seedu.addressbook.storage.Storage;
 import seedu.addressbook.storage.StorageFile;
 
 import java.util.Collections;
@@ -18,7 +17,7 @@ import java.util.Optional;
 public class Logic {
 
 
-    private Storage storage;
+    private StorageFile storage;
     private AddressBook addressBook;
 
     /** The list of person shown to the user most recently.  */
@@ -29,12 +28,12 @@ public class Logic {
         setAddressBook(storage.load());
     }
 
-    Logic(Storage storageFile, AddressBook addressBook){
+    Logic(StorageFile storageFile, AddressBook addressBook){
         setStorage(storageFile);
         setAddressBook(addressBook);
     }
 
-    void setStorage(Storage storage){
+    void setStorage(StorageFile storage){
         this.storage = storage;
     }
 
@@ -86,9 +85,10 @@ public class Logic {
     private CommandResult execute(Command command) throws Exception {
         command.setData(addressBook, lastShownList);
         CommandResult result = command.execute();
-        if (command.isMutating()) {
+
+        if (command.isMutating())
             storage.save(addressBook);
-        }
+
         return result;
     }
 

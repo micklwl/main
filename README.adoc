@@ -23,8 +23,7 @@ usually write in data structure modules.
 
 * <<UserGuide#, User Guide>>
 * <<DeveloperGuide#, Developer Guide>>
-* <<AboutUs#, About Us>>
-
+* <<LearningOutcomes#, Learning Outcomes>>
 
 == Contributors
 
