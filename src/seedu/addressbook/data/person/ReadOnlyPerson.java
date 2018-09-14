@@ -37,15 +37,28 @@ public interface ReadOnlyPerson {
      * Formats the person as text, showing all contact details.
      */
     default String getAsTextShowAll() {
-        final TextFormatter textFormatter = new TextFormatter();
         final StringBuilder builder = new StringBuilder();
-        final String stringChain = textFormatter.getPrintableString(true, getName(), getPhone(), getEmail(), getAddress());
-        builder.append(stringChain)
+        final String detailIsPrivate = "(private) ";
+        builder.append(getName())
+                .append(" Phone: ");
+        if (getPhone().isPrivate()) {
+            builder.append(detailIsPrivate);
+        }
+        builder.append(getPhone())
+                .append(" Email: ");
+        if (getEmail().isPrivate()) {
+            builder.append(detailIsPrivate);
+        }
+        builder.append(getEmail())
+                .append(" Address: ");
+        if (getAddress().isPrivate()) {
+            builder.append(detailIsPrivate);
+        }
+        builder.append(getAddress())
                 .append(" Tags: ");
         for (Tag tag : getTags()) {
             builder.append(tag);
         }
-
         return builder.toString();
     }
 
@@ -53,16 +66,21 @@ public interface ReadOnlyPerson {
      * Formats a person as text, showing only non-private contact details.
      */
     default String getAsTextHidePrivate() {
-        final TextFormatter textFormatter = new TextFormatter();
         final StringBuilder builder = new StringBuilder();
-        final String stringChain = textFormatter.getPrintableString(false, getName(), getPhone(), getEmail(), getAddress());
-        builder.append(stringChain)
-                .append(" Tags: ");
+        builder.append(getName());
+        if (!getPhone().isPrivate()) {
+            builder.append(" Phone: ").append(getPhone());
+        }
+        if (!getEmail().isPrivate()) {
+            builder.append(" Email: ").append(getEmail());
+        }
+        if (!getAddress().isPrivate()) {
+            builder.append(" Address: ").append(getAddress());
+        }
+        builder.append(" Tags: ");
         for (Tag tag : getTags()) {
             builder.append(tag);
         }
         return builder.toString();
     }
-
-
 }

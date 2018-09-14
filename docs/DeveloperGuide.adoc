@@ -50,9 +50,6 @@ Priorities: High (must have) - `* * \*`, Medium (nice to have) - `* \*`, Low (un
 |`* * *` |user |add a new person |
 |`* * *` |user |delete a person |remove entries that I no longer need
 |`* * *` |user |find a person by name |locate details of persons without having to go through the entire list
-|`* * *` |user |change a persons contact |update details of persons
-|`* * ` |advanced user |modify contacts by editting files |update details of persons manually
-|`* * ` |user |add tags to people |group people together
 |`* *` |user |hide <<private-contact-detail, private contact details>> by default |minimize chance of someone else seeing them by accident
 |`*` |user with many persons in the address book |sort persons by name |locate a person easily
 |===========================================================================================================================================
@@ -83,34 +80,6 @@ Use case ends.
 ** 3a1. AddressBook shows an error message.
 +
 Use case resumes at step 2.
-
-=== Use case: Rename tag
-
-*MSS*
-
-. User requests to rename tag
-. AddressBook shows a list of existing tags
-. User selects the tag to rename in the list and provides its new name
-. AddressBook confirms if the user wants to continue with the operation
-. User confirms the operation
-. AddressBook renames the tag
-+
-Use case ends.
-
-*Extensions*
-
-* 2a. The list is empty.
-+
-Use case ends.
-
-* 3a. The given index is invalid.
-** 3a1. AddressBook shows an error message.
-+
-Use case resumes at step 2.
-
-* 4a. User declines the operation.
-+
-Use case ends.
 
 [appendix]
 == Non Functional Requirements
