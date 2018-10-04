@@ -247,6 +247,67 @@ Views all details of the 1st person in the results of the <code>find</code> comm
 </div>
 </div>
 <div class="sect1">
+<h2 id="raises-your-privilege-level-code-raise-code"><a class="link" href="#raises-your-privilege-level-code-raise-code">Raises your privilege level : <code>raise</code></a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Raises the privilege level to Admin. Requires the master password.<br>
+Format: <code>viewall PASSWORD</code></p>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div class="paragraph">
+<p>Examples:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>raise default_pw</code><br>
+Raises your privilege level to Admin.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="see-your-privilege-level-code-say-code"><a class="link" href="#see-your-privilege-level-code-say-code">See your privilege level : <code>say</code></a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Displays your current privilege level<br>
+Format: <code>say</code></p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="change-the-password-code-change-code"><a class="link" href="#change-the-password-code-change-code">Change the password : <code>change</code></a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Changes the master password. Requires the current master password and Admin privileges.<br>
+Format: <code>change OLD_PASSWORD NEW_PASSWORD</code></p>
+</div>
+<div class="paragraph">
+<p>Changes the master password to <code>NEW_PASSWORD</code>, if the provided <code>OLD_PASSWORD</code> is correct.<br>
+Default master password is "default_pw".</p>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div class="paragraph">
+<p>Examples:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>change default_pw new_pw</code><br>
+Changes the master password to "new_pw".</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="clearing-all-entries-code-clear-code"><a class="link" href="#clearing-all-entries-code-clear-code">Clearing all entries : <code>clear</code></a></h2>
 <div class="sectionbody">
 <div class="paragraph">
@@ -274,4 +335,4 @@ Format: <code>exit</code></p>
 <p>There is no need to save manually. Address book data are saved in a file called <code>addressbook.txt</code> in the project root folder.</p>
 </div>
 </div>
-</div></div><div id="footer"><div class="container"><div id="footer-text">Last updated 2018-10-04 11:01:24 UTC</div></div></div></body></html>
+</div></div><div id="footer"><div class="container"><div id="footer-text">Last updated 2018-10-04 15:34:18 UTC</div></div></div></body></html>
