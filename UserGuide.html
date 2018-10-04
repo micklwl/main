@@ -29,7 +29,7 @@ Please refer to the <a href="DeveloperGuide.html#setting-up">Setting up</a> sect
 <p>The GUI should appear in a few seconds</p>
 <div class="imageblock">
 <div class="content">
-<img src="images/Ui.png" alt="Ui">
+<img src="images/UiNew.png" alt="UiNew">
 </div>
 </div>
 </li>
@@ -247,6 +247,106 @@ Views all details of the 1st person in the results of the <code>find</code> comm
 </div>
 </div>
 <div class="sect1">
+<h2 id="creating-an-exam-code-createexam-code"><a class="link" href="#creating-an-exam-code-createexam-code">Creating an exam : <code>createexam</code></a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Adds an exam to the exam book.<br>
+Format: <code>createexam SUBJECTNAME [p]n/EXAMNAME  d/EXAMDATE st/EXAMSTARTTIME et/EXAMENDTIME dt/EXAMDETAILS</code></p>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div class="paragraph">
+<p>Words in <code>UPPER_CASE</code> are the parameters, order of parameters are fixed.</p>
+</div>
+<div class="paragraph">
+<p>Put a <code>p</code> before the examname prefix to mark it as <code>private</code>. <code>private</code> details can only
+be seen using the <code>viewall</code> command.</p>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Examples:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>createexam Mathematics n/Math Mid-terms d/01122018 st/0900 et/1200 dt/At MPSH</code><br></p>
+</li>
+<li>
+<p><code>createexam English n/Eng Finals d/012122017 st/0800 et/1000 dt/At School Hall</code></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="adding-fees-to-a-person-code-addfees-code"><a class="link" href="#adding-fees-to-a-person-code-addfees-code">Adding fees to a person: <code>addfees</code></a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Adds a numerical fee to a person in the address book.<br>
+Format: <code>add INDEX FEE</code></p>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div class="paragraph">
+<p>Words in <code>UPPER_CASE</code> are the parameters, order of parameters are fixed.</p>
+</div>
+<div class="paragraph">
+<p>Fees are automatically marked as <code>private</code>. <code>private</code> details can only
+be seen using the <code>viewall</code> command, or for fees specifically, the <code>viewfees</code> command.</p>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Examples:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>addfees 1 344.41</code></p>
+</li>
+<li>
+<p><code>addfees 2 0.60</code></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="view-fees-of-a-person-code-viewfees-code"><a class="link" href="#view-fees-of-a-person-code-viewfees-code">View fees of a person : <code>viewfees</code></a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Displays the fees(private) of the specified person.<br>
+Format: <code>viewfees INDEX</code></p>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div class="paragraph">
+<p>Views the fees of the person at the specified <code>INDEX</code>.
+The index refers to the index number shown in the most recent listing.</p>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Examples:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>list</code><br>
+<code>viewfees 2</code><br>
+Views fees of the 2nd person in the address book.</p>
+</li>
+<li>
+<p><code>find Betsy</code><br>
+<code>viewall 1</code><br>
+Views fees of the 1st person in the results of the <code>find</code> command.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="raises-your-privilege-level-code-raise-code"><a class="link" href="#raises-your-privilege-level-code-raise-code">Raises your privilege level : <code>raise</code></a></h2>
 <div class="sectionbody">
 <div class="paragraph">
@@ -335,4 +435,4 @@ Format: <code>exit</code></p>
 <p>There is no need to save manually. Address book data are saved in a file called <code>addressbook.txt</code> in the project root folder.</p>
 </div>
 </div>
-</div></div><div id="footer"><div class="container"><div id="footer-text">Last updated 2018-10-04 15:34:18 UTC</div></div></div></body></html>
+</div></div><div id="footer"><div class="container"><div id="footer-text">Last updated 2018-10-04 16:06:06 UTC</div></div></div></body></html>
