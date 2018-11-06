@@ -80,7 +80,7 @@ public class UniqueExamList implements Iterable<Exam> {
     /**
      * Adds a exam to the list. Performs a sort to ensure list is sorted by subject name.
      *
-     * @throws DuplicateExamException if the exam is a duplicate of an existing exam in the list.
+     * @throws DuplicateExamException if the exam is a duplicate of an existing base exam in the list.
      */
     public void add(Exam toAdd) throws DuplicateExamException {
         if (contains(toAdd)) {
@@ -119,7 +119,7 @@ public class UniqueExamList implements Iterable<Exam> {
     }
 
     /**
-     * Finds the equivalent exam from the list.
+     * Finds the equivalent base exam from the list.
      *
      * @throws ExamNotFoundException if no such exam could be found in the list.
      */
@@ -136,7 +136,7 @@ public class UniqueExamList implements Iterable<Exam> {
      * Replaces an exam and adds in a new exam with updated details at the same index
      * @param exam the original exam.
      * @param updatedExam the new exam with updated details.
-     * @throws ExamNotFoundException if the original exam could not be found in the list.
+     * @throws ExamNotFoundException if the original base exam could not be found in the list.
      */
     public void updateExam(Exam exam, Exam updatedExam) throws ExamNotFoundException {
         boolean isExamPresent = false;

@@ -68,7 +68,6 @@ public class Formatter {
         return format(asIndexedList(formattedPersons, indexListFormat));
     }
 
-
     /**
      * Formats a list of strings as an indexed list, using DEFAULT_INDEX_LIST_FORMAT.
      * @see #asIndexedList(List, IndexListFormat)

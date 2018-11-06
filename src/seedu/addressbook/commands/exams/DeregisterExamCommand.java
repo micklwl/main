@@ -35,6 +35,9 @@ public class DeregisterExamCommand extends IndexFormatCommand {
     public DeregisterExamCommand() {
     }
 
+    /**
+     * Sets the indexes required for execution.
+     */
     public DeregisterExamCommand(int targetVisibleIndex, int targetExamIndex) {
         setTargetIndex(targetVisibleIndex, ObjectTargeted.PERSON);
         setTargetIndex(targetExamIndex, ObjectTargeted.EXAM);

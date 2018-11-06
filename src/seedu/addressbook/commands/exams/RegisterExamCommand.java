@@ -35,7 +35,7 @@ public class RegisterExamCommand extends IndexFormatCommand {
     }
 
     /**
-     * Convenience constructor using raw values.
+     * Sets the indexes required for execution.
      */
     public RegisterExamCommand(int targetVisibleIndex, int targetExamIndex) {
         setTargetIndex(targetVisibleIndex, ObjectTargeted.PERSON);

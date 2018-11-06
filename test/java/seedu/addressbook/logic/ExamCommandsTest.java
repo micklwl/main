@@ -6,7 +6,6 @@ import static seedu.addressbook.common.Messages.MESSAGE_PERSON_NOT_IN_ADDRESSBOO
 import static seedu.addressbook.common.Messages.MESSAGE_WRONG_NUMBER_ARGUMENTS;
 import static seedu.addressbook.logic.CommandAssertions.assertCommandBehavior;
 import static seedu.addressbook.logic.CommandAssertions.assertInvalidIndexBehaviorForCommand;
-import static seedu.addressbook.logic.CommandAssertions.assertInvalidIndexBehaviorForExamCommand;
 
 import java.util.Collections;
 import java.util.List;
@@ -223,7 +222,7 @@ public class ExamCommandsTest {
 
     @Test
     public void executeDeleteExam_invalidIndex_invalidIndexMessage() throws Exception {
-        assertInvalidIndexBehaviorForExamCommand("deleteexam");
+        assertInvalidIndexBehaviorForCommand("deleteexam", CommandAssertions.TargetType.EB);
     }
 
     @Test
@@ -275,7 +274,7 @@ public class ExamCommandsTest {
 
     @Test
     public void executeEditExam_invalidIndex_invalidIndexMessage() throws Exception {
-        assertInvalidIndexBehaviorForExamCommand("editexam 4 s/Mathematics");
+        assertInvalidIndexBehaviorForCommand("editexam 4 s/Mathematics", CommandAssertions.TargetType.EB);
     }
 
     @Test
@@ -724,7 +723,7 @@ public class ExamCommandsTest {
 
     @Test
     public void executeViewExams_invalidIndex_invalidIndexMessage() throws Exception {
-        assertInvalidIndexBehaviorForCommand("viewexams");
+        assertInvalidIndexBehaviorForCommand("viewexams", CommandAssertions.TargetType.AB);
     }
 
     @Test

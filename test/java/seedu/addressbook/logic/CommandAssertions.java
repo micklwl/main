@@ -1,6 +1,7 @@
 package seedu.addressbook.logic;
 
 import static junit.framework.TestCase.assertEquals;
+import static seedu.addressbook.common.Messages.MESSAGE_INVALID_EXAM_DISPLAYED_INDEX;
 import static seedu.addressbook.common.Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX;
 
 import java.util.Collections;
@@ -9,11 +10,9 @@ import java.util.List;
 import seedu.addressbook.TestDataHelper;
 import seedu.addressbook.commands.commandresult.CommandResult;
 import seedu.addressbook.commands.commandresult.MessageType;
-import seedu.addressbook.common.Messages;
 import seedu.addressbook.data.AddressBook;
 import seedu.addressbook.data.ExamBook;
 import seedu.addressbook.data.StatisticsBook;
-import seedu.addressbook.data.person.Exam;
 import seedu.addressbook.data.person.Person;
 import seedu.addressbook.data.person.ReadOnlyExam;
 import seedu.addressbook.data.person.ReadOnlyPerson;
@@ -59,22 +58,12 @@ public class CommandAssertions {
      */
     public static void assertCommandBehavior(String inputCommand, String expectedMessage,
                                              TargetType targetType) throws Exception {
-        switch (targetType) {
-        case AB:
+        if (targetType.equals(TargetType.AB)) {
             assertCommandBehavior(inputCommand, expectedMessage, AddressBook.empty(),
                     false, Collections.emptyList());
-            break;
-        case EB:
-            assertCommandBehavior(inputCommand, expectedMessage, ExamBook.empty(),
-                false, Collections.emptyList());
-            break;
-        case SB:
+        } else if (targetType.equals(TargetType.EB)) {
             assertCommandBehavior(inputCommand, expectedMessage, ExamBook.empty(),
                     false, Collections.emptyList());
-            break;
-        default:
-            assert(false); // should never reach here
-            break;
         }
     }
 
@@ -105,6 +94,7 @@ public class CommandAssertions {
      * Executes the command and confirms that the result messages are correct.
      * Both the 'address book' and the 'last shown list' are expected to be empty.
      * @see #assertCommandBehavior(String, String, AddressBook, boolean, List)
+     * @see #assertCommandBehavior(String, String, String, AddressBook, boolean, List)
      */
     public static void assertCommandBehavior(String inputCommand,
                                              String expectedMessage,
@@ -421,13 +411,15 @@ public class CommandAssertions {
 
     /**
      * Confirms the 'invalid argument index number behaviour' for the given command
-     * targeting a single person in the last shown list, using visible index.
+     * targeting a single object in the last shown list, using visible index.
      * Used for commands in the form of COMMAND_WORD INDEX
-     * @param commandWord to test assuming it targets a single person in the last shown list based on visible index.
+     * @param commandWord to test assuming it targets a single object in the last shown list based on visible index.
+     * @param targetType to check which list the command is targeting
      */
-    public static void assertInvalidIndexBehaviorForCommand(String commandWord) throws Exception {
+    public static void assertInvalidIndexBehaviorForCommand(String commandWord,
+                                                            TargetType targetType) throws Exception {
         final String[] commands = {commandWord + " 0", commandWord + " -1", commandWord + " 3"};
-        assertInvalidIndexBehaviour(commands);
+        assertInvalidIndexBehaviour(commands, targetType);
     }
 
     /**
@@ -438,13 +430,14 @@ public class CommandAssertions {
      * @param commandWord of the command.
      * @param prefix containing required information to enter before the INDEX.
      * @param suffix containing required information to enter after the INDEX.
+     * @param targetType to check which list the command is targeting
      */
-    public static void assertInvalidIndexBehaviorForCommand(String commandWord, String prefix, String suffix)
-            throws Exception {
+    public static void assertInvalidIndexBehaviorForCommand(String commandWord, String prefix, String suffix,
+                                                            TargetType targetType) throws Exception {
         final String[] commands = {String.format("%s %s 0 %s", commandWord, prefix, suffix),
                 String.format("%s %s -1 %s", commandWord, prefix, suffix),
                 String.format("%s %s 3 %s", commandWord, prefix, suffix)};
-        assertInvalidIndexBehaviour(commands);
+        assertInvalidIndexBehaviour(commands, targetType);
     }
 
     /**
@@ -452,39 +445,24 @@ public class CommandAssertions {
      * targeting a single person in the last shown list, using visible index.
      *
      * @param commands to test assuming it targets a single person in the last shown list based on visible index.
+     * @param targetType to check which list the command is targeting
      */
-    private static void assertInvalidIndexBehaviour(String[] commands) throws Exception {
+    private static void assertInvalidIndexBehaviour(String[] commands, TargetType targetType) throws Exception {
         TestDataHelper helper = new TestDataHelper();
         List<Person> lastShownList = helper.generatePersonList(false, true);
 
         logic.setLastShownList(lastShownList);
 
+        String errorMessage = "";
+        if (targetType.equals(TargetType.AB)) {
+            errorMessage = MESSAGE_INVALID_PERSON_DISPLAYED_INDEX;
+        } else if (targetType.equals(TargetType.EB)) {
+            errorMessage = MESSAGE_INVALID_EXAM_DISPLAYED_INDEX;
+        }
+
         for (String command: commands) {
-            assertCommandBehavior(command, MESSAGE_INVALID_PERSON_DISPLAYED_INDEX,
+            assertCommandBehavior(command, errorMessage,
                     AddressBook.empty(), false, lastShownList);
         }
-    }
-
-    /**
-     * Confirms the 'invalid argument index number behaviour' for the given command
-     * targeting a single exam in the last shown list, using visible index.
-     * @param commandWord to test assuming it targets a single exam in the last shown list based on visible index.
-     */
-    public static void assertInvalidIndexBehaviorForExamCommand(String commandWord) throws Exception {
-        String expectedMessage = Messages.MESSAGE_INVALID_EXAM_DISPLAYED_INDEX;
-        TestDataHelper helper = new TestDataHelper();
-        List<Exam> lastShownList = helper.generateExamList(false, true);
-
-        logic.setLastShownExamList(lastShownList);
-
-        assertCommandBehavior(commandWord + " -1", expectedMessage,
-                ExamBook.empty(), false, lastShownList);
-
-        assertCommandBehavior(commandWord + " 0", expectedMessage,
-                ExamBook.empty(), false, lastShownList);
-
-        assertCommandBehavior(commandWord + " 3", expectedMessage,
-                ExamBook.empty(), false, lastShownList);
-
     }
 }

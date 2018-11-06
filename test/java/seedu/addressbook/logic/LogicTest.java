@@ -315,7 +315,7 @@ public class LogicTest {
 
     @Test
     public void executeViewInvalidIndex() throws Exception {
-        assertInvalidIndexBehaviorForCommand("view");
+        assertInvalidIndexBehaviorForCommand("view", CommandAssertions.TargetType.AB);
     }
 
     @Test
@@ -373,7 +373,7 @@ public class LogicTest {
 
     @Test
     public void executeViewAllInvalidIndex() throws Exception {
-        assertInvalidIndexBehaviorForCommand("viewall");
+        assertInvalidIndexBehaviorForCommand("viewall", CommandAssertions.TargetType.AB);
     }
 
     @Test
@@ -432,7 +432,7 @@ public class LogicTest {
 
     @Test
     public void executeDeleteInvalidIndex() throws Exception {
-        assertInvalidIndexBehaviorForCommand("delete");
+        assertInvalidIndexBehaviorForCommand("delete", CommandAssertions.TargetType.AB);
     }
 
     @Test

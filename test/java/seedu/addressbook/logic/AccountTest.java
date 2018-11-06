@@ -104,7 +104,7 @@ public class AccountTest {
 
     @Test
     public void executeAddAccountInvalidIndex() throws Exception {
-        assertInvalidIndexBehaviorForCommand("addacc", "", "username password BASIC");
+        assertInvalidIndexBehaviorForCommand("addacc", "", "username password BASIC", CommandAssertions.TargetType.AB);
     }
 
     @Test
@@ -239,7 +239,7 @@ public class AccountTest {
 
     @Test
     public void executeDeleteAccountInvalidIndex() throws Exception {
-        assertInvalidIndexBehaviorForCommand("delacc");
+        assertInvalidIndexBehaviorForCommand("delacc", CommandAssertions.TargetType.AB);
     }
 
     @Test

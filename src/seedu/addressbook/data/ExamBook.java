@@ -73,7 +73,6 @@ public class ExamBook {
      */
     public void editExam(ReadOnlyExam target, Exam editedExam)
             throws ExamNotFoundException, DuplicateExamException {
-
         if (examList.contains(target)) {
             examList.add(editedExam);
             examList.remove(target);

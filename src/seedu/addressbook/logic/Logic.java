@@ -203,7 +203,7 @@ public class Logic {
     /** Updates the {@link #lastShownList} if the result contains a list of Persons.
      *  Updates the {@link #lastShownExamList} if the result contains a list of Exams.
      *  Updates the {@link #lastShownAssessmentList} if the result contains a list of Assessments.
-     * */
+     */
     private void recordResult(CommandResult result) {
         final Optional<List<? extends ReadOnlyPerson>> personList = result.getRelevantPersons();
         personList.ifPresent(a -> lastShownList = a);

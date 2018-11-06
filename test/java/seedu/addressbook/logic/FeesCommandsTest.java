@@ -255,7 +255,7 @@ public class FeesCommandsTest {
 
     @Test
     public void executeViewFeesCommandInvalidIndex() throws Exception {
-        assertInvalidIndexBehaviorForCommand("viewfees");
+        assertInvalidIndexBehaviorForCommand("viewfees", CommandAssertions.TargetType.AB);
     }
 
     @Test
