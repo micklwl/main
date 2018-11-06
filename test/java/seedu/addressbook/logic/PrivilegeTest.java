@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 import static seedu.addressbook.common.Messages.MESSAGE_INSUFFICIENT_PRIVILEGE;
 import static seedu.addressbook.common.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.addressbook.common.Messages.MESSAGE_WRONG_NUMBER_ARGUMENTS;
+import static seedu.addressbook.logic.CommandAssertions.assertCommandBehavior;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,15 +67,15 @@ public class PrivilegeTest {
     public void executeSayNotLoggedIn() throws Exception {
         final String feedbackFormat = ViewPrivilegeCommand.MESSAGE_NOT_LOGGED_IN
                 + ViewPrivilegeCommand.MESSAGE_PRIVILEGE_FORMAT;
-        CommandAssertions.assertCommandBehavior("viewpri",
+        assertCommandBehavior("viewpri",
                         String.format(feedbackFormat, User.PrivilegeLevel.Basic.toString()), MessageType.OUTPUT);
 
         privilege.raiseToTutor();
-        CommandAssertions.assertCommandBehavior("viewpri",
+        assertCommandBehavior("viewpri",
                         String.format(feedbackFormat, User.PrivilegeLevel.Tutor.toString()), MessageType.OUTPUT);
 
         privilege.raiseToAdmin();
-        CommandAssertions.assertCommandBehavior("viewpri",
+        assertCommandBehavior("viewpri",
                         String.format(feedbackFormat, User.PrivilegeLevel.Admin.toString()), MessageType.OUTPUT);
     }
 
@@ -86,15 +87,15 @@ public class PrivilegeTest {
                 + ViewPrivilegeCommand.MESSAGE_PRIVILEGE_FORMAT;
 
         privilege.setMyPerson(testPerson);
-        CommandAssertions.assertCommandBehavior("viewpri",
+        assertCommandBehavior("viewpri",
                 String.format(feedbackFormat, User.PrivilegeLevel.Basic.toString()), MessageType.OUTPUT);
 
         privilege.raiseToTutor();
-        CommandAssertions.assertCommandBehavior("viewpri",
+        assertCommandBehavior("viewpri",
                 String.format(feedbackFormat, User.PrivilegeLevel.Tutor.toString()), MessageType.OUTPUT);
 
         privilege.raiseToAdmin();
-        CommandAssertions.assertCommandBehavior("viewpri",
+        assertCommandBehavior("viewpri",
                 String.format(feedbackFormat, User.PrivilegeLevel.Admin.toString()), MessageType.OUTPUT);
     }
 
@@ -112,7 +113,7 @@ public class PrivilegeTest {
                 RaisePrivilegeCommand.MESSAGE_USAGE);
 
         for (String input: inputs) {
-            CommandAssertions.assertCommandBehavior(input, expectedMessage);
+            assertCommandBehavior(input, expectedMessage, CommandAssertions.TargetType.AB);
         }
         assertEquals(privilege.getUser(), new BasicUser());
     }
@@ -130,8 +131,8 @@ public class PrivilegeTest {
         for (Pair<String, Integer> inputToOutput: inputToExpectedOutput) {
             final String expectedMessage = String.format(MESSAGE_WRONG_NUMBER_ARGUMENTS, requiredArgument,
                     inputToOutput.getSecond(), RaisePrivilegeCommand.MESSAGE_USAGE);
-            CommandAssertions.assertCommandBehavior(inputToOutput.getFirst(),
-                    expectedMessage);
+            assertCommandBehavior(inputToOutput.getFirst(),
+                    expectedMessage, CommandAssertions.TargetType.AB);
         }
         assertEquals(privilege.getUser(), new BasicUser());
     }
@@ -139,7 +140,8 @@ public class PrivilegeTest {
     @Test
     public void executeRaisePrivilegeWrongPassword() throws Exception {
         String expectedMessage = RaisePrivilegeCommand.MESSAGE_WRONG_PASSWORD;
-        CommandAssertions.assertCommandBehavior("raise wrong_password", expectedMessage);
+        assertCommandBehavior("raise wrong_password", expectedMessage,
+                CommandAssertions.TargetType.AB);
         assertEquals(privilege.getUser(), new BasicUser());
     }
 
@@ -149,53 +151,56 @@ public class PrivilegeTest {
         Person person = helper.adam();
         privilege.setMyPerson(person);
         String expectedMessage = String.format(RaisePrivilegeCommand.MESSAGE_LOGGED_IN, person.getName());
-        CommandAssertions.assertCommandBehavior("raise default_pw", expectedMessage);
+        assertCommandBehavior("raise default_pw", expectedMessage,
+                CommandAssertions.TargetType.AB);
         assertEquals(privilege.getUser(), new BasicUser());
     }
 
     @Test
     public void executeRaisePrivilegeSuccessDefaultPassword() throws Exception {
         String defaultPassword = AddressBook.DEFAULT_MASTER_PASSWORD;
-        CommandAssertions.assertCommandBehavior("raise " + defaultPassword,
-                String.format(RaisePrivilegeCommand.MESSAGE_SUCCESS, new AdminUser().getPrivilegeLevelAsString()));
+        assertCommandBehavior("raise " + defaultPassword,
+                String.format(RaisePrivilegeCommand.MESSAGE_SUCCESS, new AdminUser().getPrivilegeLevelAsString()),
+                CommandAssertions.TargetType.AB);
         assertEquals(privilege.getUser(), new AdminUser());
     }
 
     @Test
     public void executeRaisePrivilegeSuccessChangedPassword() throws Exception {
         addressBook.setMasterPassword("new_Password");
-        CommandAssertions.assertCommandBehavior("raise new_Password",
-                String.format(RaisePrivilegeCommand.MESSAGE_SUCCESS, new AdminUser().getPrivilegeLevelAsString()));
+        assertCommandBehavior("raise new_Password",
+                String.format(RaisePrivilegeCommand.MESSAGE_SUCCESS, new AdminUser().getPrivilegeLevelAsString()),
+                CommandAssertions.TargetType.AB);
         assertEquals(privilege.getUser(), new AdminUser());
     }
 
     @Test
     public void executeSetPermInvalidCommand() throws Exception {
         privilege.raiseToAdmin();
-        CommandAssertions.assertCommandBehavior("perm",
+        assertCommandBehavior("perm",
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT,
-                        SetPermanentAdminCommand.MESSAGE_USAGE));
+                        SetPermanentAdminCommand.MESSAGE_USAGE), CommandAssertions.TargetType.AB);
         assertFalse(addressBook.isPermAdmin());
     }
 
     @Test
     public void executeSetPermInvalidDesiredState() throws Exception {
         privilege.raiseToAdmin();
-        CommandAssertions.assertCommandBehavior("perm wut",
+        assertCommandBehavior("perm wut",
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT,
-                        SetPermanentAdminCommand.MESSAGE_USAGE));
+                        SetPermanentAdminCommand.MESSAGE_USAGE), CommandAssertions.TargetType.AB);
         assertFalse(addressBook.isPermAdmin());
     }
 
     @Test
     public void executeSetPermSuccess() throws Exception {
         privilege.raiseToAdmin();
-        CommandAssertions.assertCommandBehavior("perm true",
-                String.format(SetPermanentAdminCommand.MESSAGE_SUCCESS, ""));
+        assertCommandBehavior("perm true",
+                String.format(SetPermanentAdminCommand.MESSAGE_SUCCESS, ""), CommandAssertions.TargetType.AB);
         assertTrue(addressBook.isPermAdmin());
 
-        CommandAssertions.assertCommandBehavior("perm false",
-                String.format(SetPermanentAdminCommand.MESSAGE_SUCCESS, " not"));
+        assertCommandBehavior("perm false",
+                String.format(SetPermanentAdminCommand.MESSAGE_SUCCESS, " not"), CommandAssertions.TargetType.AB);
         assertFalse(addressBook.isPermAdmin());
     }
 
@@ -220,8 +225,9 @@ public class PrivilegeTest {
         Parser parser = new Parser();
         for (String input: inputs) {
             Command command = parser.parseCommand(input);
-            CommandAssertions.assertCommandBehavior(input, String.format(MESSAGE_INSUFFICIENT_PRIVILEGE,
-                    privilege.getRequiredPrivilegeAsString(command), privilege.getLevelAsString()));
+            assertCommandBehavior(input, String.format(MESSAGE_INSUFFICIENT_PRIVILEGE,
+                    privilege.getRequiredPrivilegeAsString(command), privilege.getLevelAsString()),
+                    CommandAssertions.TargetType.AB);
         }
     }
 }

@@ -80,7 +80,7 @@ public class ExamCommandsTest {
     }
 
     @Test
-    public void executeAddExamSuccessful() throws Exception {
+    public void executeAddExam_validData_success() throws Exception {
         // setup expectations
         TestDataHelper helper = new TestDataHelper();
         Exam toBeAdded = helper.math();
@@ -91,11 +91,14 @@ public class ExamCommandsTest {
         assertCommandBehavior(
                 helper.generateAddExamCommand(toBeAdded),
                 String.format(AddExamCommand.MESSAGE_SUCCESS, toBeAdded),
-                expected, true);
+                expected,
+                true,
+                expected.getAllExam().immutableListView(),
+                true);
     }
 
     @Test
-    public void executeAddDuplicateExamNotAllowed() throws Exception {
+    public void executeAddExam_duplicateData_duplicateMessage() throws Exception {
         // setup expectations
         TestDataHelper helper = new TestDataHelper();
         Exam toBeAdded = helper.math();
@@ -109,11 +112,13 @@ public class ExamCommandsTest {
         assertCommandBehavior(
                 helper.generateAddExamCommand(toBeAdded), AddExamCommand.MESSAGE_DUPLICATE_EXAM,
                 expected,
-                true);
+                false,
+                Collections.emptyList(),
+                false);
     }
 
     @Test
-    public void executeAddExamInvalidArgs() throws Exception {
+    public void executeAddExam_invalidArgs_invalidMessage() throws Exception {
         final String invalidDateArg = "d/32122018";
         final String invalidDateArg2 = "d/not_a_number";
         final String validDateArg = "d/" + Exam.EXAM_DATE_EXAMPLE;
@@ -137,23 +142,23 @@ public class ExamCommandsTest {
 
         String expectedMessage = Messages.MESSAGE_DATE_CONSTRAINTS;
         assertCommandBehavior(String.format(addExamCommandFormatString, invalidDateArg,
-                validStartTimeArg, validEndTimeArg), expectedMessage);
+                validStartTimeArg, validEndTimeArg), expectedMessage, CommandAssertions.TargetType.EB);
         assertCommandBehavior(String.format(addExamCommandFormatString, invalidDateArg2,
-                validStartTimeArg, validEndTimeArg), expectedMessage);
+                validStartTimeArg, validEndTimeArg), expectedMessage, CommandAssertions.TargetType.EB);
 
         expectedMessage = Exam.MESSAGE_TIME_CONSTRAINTS;
         assertCommandBehavior(String.format(addExamCommandFormatString, validDateArg,
-                invalidStartTimeArg, validEndTimeArg), expectedMessage);
+                invalidStartTimeArg, validEndTimeArg), expectedMessage, CommandAssertions.TargetType.EB);
         assertCommandBehavior(String.format(addExamCommandFormatString, validDateArg,
-                invalidStartTimeArg2, validEndTimeArg), expectedMessage);
+                invalidStartTimeArg2, validEndTimeArg), expectedMessage, CommandAssertions.TargetType.EB);
         assertCommandBehavior(String.format(addExamCommandFormatString, validDateArg,
-                validStartTimeArg, invalidEndTimeArg), expectedMessage);
+                validStartTimeArg, invalidEndTimeArg), expectedMessage, CommandAssertions.TargetType.EB);
         assertCommandBehavior(String.format(addExamCommandFormatString, validDateArg,
-                validStartTimeArg, invalidEndTimeArg2), expectedMessage);
+                validStartTimeArg, invalidEndTimeArg2), expectedMessage, CommandAssertions.TargetType.EB);
 
         expectedMessage = Exam.MESSAGE_TIME_INTERVAL_CONSTRAINTS;
         assertCommandBehavior(String.format(addExamCommandFormatString, validDateArg,
-                validStartTimeArg, invalidEndTimeIntervalArg), expectedMessage);
+                validStartTimeArg, invalidEndTimeIntervalArg), expectedMessage, CommandAssertions.TargetType.EB);
     }
 
     @Test
@@ -191,19 +196,7 @@ public class ExamCommandsTest {
     }
 
     @Test
-    public void executeDeleteExamInvalidArgsFormat() throws Exception {
-        String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteExamCommand.MESSAGE_USAGE);
-        assertCommandBehavior("deleteexam ", expectedMessage);
-        assertCommandBehavior("deleteexam arg not number", expectedMessage);
-    }
-
-    @Test
-    public void executeDeleteExamInvalidIndex() throws Exception {
-        assertInvalidIndexBehaviorForExamCommand("deleteexam");
-    }
-
-    @Test
-    public void executeDeleteExamRemovesCorrectExam() throws Exception {
+    public void executeDeleteExamRemovesCorrectExam_validData_success() throws Exception {
         TestDataHelper helper = new TestDataHelper();
         List<Exam> threeExams = setUpThreeExamsNoTakers(helper);
         helper.addToExamBook(examBook, threeExams);
@@ -222,7 +215,19 @@ public class ExamCommandsTest {
     }
 
     @Test
-    public void executeDeleteMissingInExamBook() throws Exception {
+    public void executeDeleteExam_invalidArgsFormat_invalidCommandMessage() throws Exception {
+        String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteExamCommand.MESSAGE_USAGE);
+        assertCommandBehavior("deleteexam ", expectedMessage, CommandAssertions.TargetType.EB);
+        assertCommandBehavior("deleteexam arg not number", expectedMessage, CommandAssertions.TargetType.EB);
+    }
+
+    @Test
+    public void executeDeleteExam_invalidIndex_invalidIndexMessage() throws Exception {
+        assertInvalidIndexBehaviorForExamCommand("deleteexam");
+    }
+
+    @Test
+    public void executeDeleteExam_missingInExamBook_examMissingMessage() throws Exception {
         TestDataHelper helper = new TestDataHelper();
         List<Exam> threeExams = setUpThreeExamsNoTakers(helper);
         helper.addToExamBook(examBook, threeExams);
@@ -241,40 +246,7 @@ public class ExamCommandsTest {
     }
 
     @Test
-    public void executeEditMissingInExamBook() throws Exception {
-        TestDataHelper helper = new TestDataHelper();
-        List<Exam> threeExams = setUpThreeExamsNoTakers(helper);
-        helper.addToExamBook(examBook, threeExams);
-        logic.setLastShownExamList(threeExams);
-
-        ExamBook expected = helper.generateExamBook(threeExams);
-        Exam e2 = helper.generateExam(2, true);
-        expected.removeExam(e2);
-
-        examBook.removeExam(e2);
-
-        assertCommandBehavior("editexam 2 s/Mathematics",
-                Messages.MESSAGE_EXAM_NOT_IN_EXAMBOOK,
-                expected,
-                false,
-                threeExams);
-    }
-
-    @Test
-    public void executeEditExamInvalidIndex() throws Exception {
-        assertInvalidIndexBehaviorForExamCommand("editexam 4 s/Mathematics");
-    }
-
-    @Test
-    public void executeEditExamInvalidArgsFormat() throws Exception {
-        String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, EditExamCommand.MESSAGE_USAGE);
-        assertCommandBehavior("editexam ", expectedMessage);
-        expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, EditExamCommand.MESSAGE_USAGE);
-        assertCommandBehavior("editexam arg not number", expectedMessage);
-    }
-
-    @Test
-    public void executeEditExamSuccess() throws Exception {
+    public void executeEditExam_validData_success() throws Exception {
         TestDataHelper helper = new TestDataHelper();
         List<Exam> threeExams = setUpThreeExamsNoTakers(helper);
         helper.addToExamBook(examBook, threeExams);
@@ -294,61 +266,88 @@ public class ExamCommandsTest {
     }
 
     @Test
-    public void executeEditExam_invalidArgs() throws Exception {
+    public void executeEditExam_invalidArgsFormat_invalidCommandMessage() throws Exception {
+        String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, EditExamCommand.MESSAGE_USAGE);
+        assertCommandBehavior("editexam ", expectedMessage, CommandAssertions.TargetType.EB);
+        expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, EditExamCommand.MESSAGE_USAGE);
+        assertCommandBehavior("editexam arg not number", expectedMessage, CommandAssertions.TargetType.EB);
+    }
+
+    @Test
+    public void executeEditExam_invalidIndex_invalidIndexMessage() throws Exception {
+        assertInvalidIndexBehaviorForExamCommand("editexam 4 s/Mathematics");
+    }
+
+    @Test
+    public void executeEditExam_invalidArgs_invalidMessage() throws Exception {
         TestDataHelper helper = new TestDataHelper();
-        Exam e1 = helper.generateExam(1, false);
-        List<Exam> singleExam = helper.generateExamList(e1);
-        helper.addToExamBook(examBook, singleExam);
-        logic.setLastShownExamList(singleExam);
+        List<Exam> threeExams = setUpThreeExamsNoTakers(helper);
+        helper.addToExamBook(examBook, threeExams);
+        logic.setLastShownExamList(threeExams);
+
+        ExamBook expected = helper.generateExamBook(threeExams);
+        Exam e2 = helper.generateExam(2, true);
+        Exam e4 = helper.generateExam(4, false);
+        expected.editExam(e2, e4);
 
         String expectedMessage = Messages.MESSAGE_DATE_CONSTRAINTS;
-        assertCommandBehavior("editexam 1 d/notADate", expectedMessage);
-        assertCommandBehavior("editexam 1 d/07012018 st/09:00", expectedMessage);
-        assertCommandBehavior("editexam 1 d/32122018 st/09:00", expectedMessage);
+        assertCommandBehavior("editexam 1 d/notADate", expectedMessage,
+                examBook, logic.getLastShownExamList());
+        assertCommandBehavior("editexam 1 d/07012018 st/09:00", expectedMessage,
+                examBook, logic.getLastShownExamList());
+        assertCommandBehavior("editexam 1 d/32122018 st/09:00", expectedMessage,
+                examBook, logic.getLastShownExamList());
 
         expectedMessage = Exam.MESSAGE_TIME_CONSTRAINTS;
-        assertCommandBehavior("editexam 1 st/notATime", expectedMessage);
-        assertCommandBehavior("editexam 1 st/07012018", expectedMessage);
-        assertCommandBehavior("editexam 1 st/2366", expectedMessage);
-        assertCommandBehavior("editexam 1 et/notATime", expectedMessage);
-        assertCommandBehavior("editexam 1 et/07012018", expectedMessage);
-        assertCommandBehavior("editexam 1 et/2366", expectedMessage);
+        assertCommandBehavior("editexam 1 st/notATime", expectedMessage,
+                examBook, logic.getLastShownExamList());
+        assertCommandBehavior("editexam 1 st/07012018", expectedMessage,
+                examBook, logic.getLastShownExamList());
+        assertCommandBehavior("editexam 1 st/2366", expectedMessage,
+                examBook, logic.getLastShownExamList());
+        assertCommandBehavior("editexam 1 et/notATime", expectedMessage,
+                examBook, logic.getLastShownExamList());
+        assertCommandBehavior("editexam 1 et/07012018", expectedMessage,
+                examBook, logic.getLastShownExamList());
+        assertCommandBehavior("editexam 1 et/2366", expectedMessage,
+                examBook, logic.getLastShownExamList());
 
         expectedMessage = Exam.MESSAGE_TIME_INTERVAL_CONSTRAINTS;
-        assertCommandBehavior("editexam 1 st/09:00 et/08:00", expectedMessage);
+        assertCommandBehavior("editexam 1 st/09:00 et/08:00", expectedMessage,
+                examBook, logic.getLastShownExamList());
 
         expectedMessage = EditExamCommand.MESSAGE_DUPLICATE_EXAM;
-        assertCommandBehavior(String.format("editexam 1 e/%s", e1.getExamName()), expectedMessage);
+        Exam e1 = helper.generateExam(1, true);
+        assertCommandBehavior(String.format("editexam 1 e/%s", e1.getExamName()), expectedMessage,
+                examBook, logic.getLastShownExamList());
 
         expectedMessage = EditExamCommand.MESSAGE_PRIVATE_CONSTRAINTS;
-        assertCommandBehavior("editexam 1 p/ok", expectedMessage);
+        assertCommandBehavior("editexam 1 p/ok", expectedMessage,
+                examBook, logic.getLastShownExamList());
     }
 
     @Test
-    public void executeRegisterExam_invalidNumberOfArgs() throws Exception {
-        String expectedMessage = String.format(MESSAGE_WRONG_NUMBER_ARGUMENTS , 2, 1,
-                RegisterExamCommand.MESSAGE_USAGE);
-        assertCommandBehavior("regexam 1", expectedMessage);
+    public void executeEdit_missingInExamBook_examMissingMessage() throws Exception {
+        TestDataHelper helper = new TestDataHelper();
+        List<Exam> threeExams = setUpThreeExamsNoTakers(helper);
+        helper.addToExamBook(examBook, threeExams);
+        logic.setLastShownExamList(threeExams);
 
-        expectedMessage = String.format(MESSAGE_WRONG_NUMBER_ARGUMENTS , 2, 3,
-                RegisterExamCommand.MESSAGE_USAGE);
-        assertCommandBehavior("regexam 1 1 1", expectedMessage);
+        ExamBook expected = helper.generateExamBook(threeExams);
+        Exam e2 = helper.generateExam(2, true);
+        expected.removeExam(e2);
 
-        expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, RegisterExamCommand.MESSAGE_USAGE);
-        assertCommandBehavior("regexam", expectedMessage);
-        assertCommandBehavior("regexam ", expectedMessage);
+        examBook.removeExam(e2);
+
+        assertCommandBehavior("editexam 2 s/Mathematics",
+                Messages.MESSAGE_EXAM_NOT_IN_EXAMBOOK,
+                expected,
+                false,
+                threeExams);
     }
 
     @Test
-    public void executeRegisterExam_invalidParsedArgs() throws Exception {
-        String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, RegisterExamCommand.MESSAGE_USAGE);
-        assertCommandBehavior("regexam not_a_number 2", expectedMessage);
-        assertCommandBehavior("regexam 2 not_a_number", expectedMessage);
-        assertCommandBehavior("regexam not_a_number not_a_number", expectedMessage);
-    }
-
-    @Test
-    public void executeRegisterExam_validArgsSingleTaker() throws Exception {
+    public void executeRegisterExam_validArgsSingleTaker_success() throws Exception {
         TestDataHelper helper = new TestDataHelper();
         Exam e1 = helper.generateExam(1, false);
         List<Exam> singleExam = helper.generateExamList(e1);
@@ -379,7 +378,7 @@ public class ExamCommandsTest {
     }
 
     @Test
-    public void executeRegisterExam_validArgsMultiTakers() throws Exception {
+    public void executeRegisterExam_validArgsMultiTakers_success() throws Exception {
         TestDataHelper helper = new TestDataHelper();
         List<Exam> threeExams = setUpThreeExamsWithTakers(helper, 2, 0, 0);
         helper.addToExamBook(examBook, threeExams);
@@ -412,7 +411,18 @@ public class ExamCommandsTest {
     }
 
     @Test
-    public void executeRegisterExam_validArgsSingleTakerAlreadyRegistered() throws Exception {
+    public void executeRegisterExam_invalidParsedArgs() throws Exception {
+        String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, RegisterExamCommand.MESSAGE_USAGE);
+        assertCommandBehavior("regexam not_a_number 2", expectedMessage,
+                CommandAssertions.TargetType.EB);
+        assertCommandBehavior("regexam 2 not_a_number", expectedMessage,
+                CommandAssertions.TargetType.EB);
+        assertCommandBehavior("regexam not_a_number not_a_number", expectedMessage,
+                CommandAssertions.TargetType.EB);
+    }
+
+    @Test
+    public void executeRegisterExam_validArgsSingleTakerAlreadyRegistered_registerDuplicateMessage() throws Exception {
         TestDataHelper helper = new TestDataHelper();
         List<Exam> threeExams = setUpThreeExamsWithTakers(helper, 1, 0, 0);
         helper.addToExamBook(examBook, threeExams);
@@ -434,7 +444,22 @@ public class ExamCommandsTest {
     }
 
     @Test
-    public void executeRegisterExam_invalidArgsForPersonIndex() throws Exception {
+    public void executeRegisterExam_invalidNumberOfArgs_invalidNumberMessage() throws Exception {
+        String expectedMessage = String.format(MESSAGE_WRONG_NUMBER_ARGUMENTS, 2, 1,
+                RegisterExamCommand.MESSAGE_USAGE);
+        assertCommandBehavior("regexam 1", expectedMessage, CommandAssertions.TargetType.EB);
+
+        expectedMessage = String.format(MESSAGE_WRONG_NUMBER_ARGUMENTS, 2, 3,
+                RegisterExamCommand.MESSAGE_USAGE);
+        assertCommandBehavior("regexam 1 1 1", expectedMessage, CommandAssertions.TargetType.EB);
+
+        expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, RegisterExamCommand.MESSAGE_USAGE);
+        assertCommandBehavior("regexam", expectedMessage, CommandAssertions.TargetType.EB);
+        assertCommandBehavior("regexam ", expectedMessage, CommandAssertions.TargetType.EB);
+    }
+
+    @Test
+    public void executeRegisterExam_invalidArgsForPersonIndex_invalidPersonIndexMessage() throws Exception {
         TestDataHelper helper = new TestDataHelper();
         Exam e1 = helper.generateExam(1, false);
         List<Exam> singleExam = helper.generateExamList(e1);
@@ -448,21 +473,17 @@ public class ExamCommandsTest {
 
         assertCommandBehavior("regexam 2 1",
                 Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX,
-                addressBook, examBook);
-
-        assertCommandBehavior("regexam 2 1",
-                Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX,
                 addressBook, examBook, false, false,
-                logic.getLastShownList(), logic.getLastShownExamList(), false);
+                logic.getLastShownList(), logic.getLastShownExamList());
 
         assertCommandBehavior("regexam 2 2",
                 Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX,
                 addressBook, examBook, false, false,
-                logic.getLastShownList(), logic.getLastShownExamList(), false);
+                logic.getLastShownList(), logic.getLastShownExamList());
     }
 
     @Test
-    public void executeRegisterExam_invalidArgsForExamIndex() throws Exception {
+    public void executeRegisterExam_invalidArgsForExamIndex_invalidExamIndexMessage() throws Exception {
         TestDataHelper helper = new TestDataHelper();
         Exam e1 = helper.generateExam(1, false);
         List<Exam> singleExam = helper.generateExamList(e1);
@@ -476,11 +497,12 @@ public class ExamCommandsTest {
 
         assertCommandBehavior("regexam 1 2",
                 Messages.MESSAGE_INVALID_EXAM_DISPLAYED_INDEX,
-                addressBook, examBook);
+                addressBook, examBook, false, false,
+                logic.getLastShownList(), logic.getLastShownExamList());
     }
 
     @Test
-    public void executeRegisterExam_personMissingInAddressBook() throws Exception {
+    public void executeRegisterExam_personMissingInAddressBook_personMissingMessage() throws Exception {
         TestDataHelper helper = new TestDataHelper();
         Exam e1 = helper.generateExam(1, false);
         List<Exam> singleExam = helper.generateExamList(e1);
@@ -493,11 +515,12 @@ public class ExamCommandsTest {
 
         assertCommandBehavior("regexam 1 1",
                 MESSAGE_PERSON_NOT_IN_ADDRESSBOOK,
-                addressBook, examBook);
+                addressBook, examBook, false, false,
+                logic.getLastShownList(), logic.getLastShownExamList());
     }
 
     @Test
-    public void executeRegisterExam_examMissingInExamBook() throws Exception {
+    public void executeRegisterExam_examMissingInExamBook_examMissingMessage() throws Exception {
         TestDataHelper helper = new TestDataHelper();
         Exam e1 = helper.generateExam(1, false);
         List<Exam> singleExam = helper.generateExamList(e1);
@@ -510,34 +533,12 @@ public class ExamCommandsTest {
 
         assertCommandBehavior("regexam 1 1",
                 Messages.MESSAGE_EXAM_NOT_IN_EXAMBOOK,
-                addressBook, examBook);
+                addressBook, examBook, false, false,
+                logic.getLastShownList(), logic.getLastShownExamList());
     }
 
     @Test
-    public void executeDeregisterExam_invalidNumberOfArgs() throws Exception {
-        String expectedMessage = String.format(MESSAGE_WRONG_NUMBER_ARGUMENTS , 2, 1,
-                DeregisterExamCommand.MESSAGE_USAGE);
-        assertCommandBehavior("deregexam 1", expectedMessage);
-
-        expectedMessage = String.format(MESSAGE_WRONG_NUMBER_ARGUMENTS , 2, 3,
-                DeregisterExamCommand.MESSAGE_USAGE);
-        assertCommandBehavior("deregexam 1 1 1", expectedMessage);
-
-        expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeregisterExamCommand.MESSAGE_USAGE);
-        assertCommandBehavior("deregexam", expectedMessage);
-        assertCommandBehavior("deregexam ", expectedMessage);
-    }
-
-    @Test
-    public void executeDeregisterExam_invalidParsedArgs() throws Exception {
-        String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeregisterExamCommand.MESSAGE_USAGE);
-        assertCommandBehavior("deregexam not_a_number 2", expectedMessage);
-        assertCommandBehavior("deregexam 2 not_a_number", expectedMessage);
-        assertCommandBehavior("deregexam not_a_number not_a_number", expectedMessage);
-    }
-
-    @Test
-    public void executeDeregisterExam_validArgsSingleTaker() throws Exception {
+    public void executeDeregisterExam_validArgsSingleTaker_success() throws Exception {
         TestDataHelper helper = new TestDataHelper();
         Exam e1 = helper.generateExam(1, false, 1);
         List<Exam> singleExam = helper.generateExamList(e1);
@@ -568,7 +569,7 @@ public class ExamCommandsTest {
     }
 
     @Test
-    public void executeDeregisterExam_validArgsMultiTakers() throws Exception {
+    public void executeDeregisterExam_validArgsMultiTakers_success() throws Exception {
         TestDataHelper helper = new TestDataHelper();
         List<Exam> singleExam = setUpThreeExamsWithTakers(helper, 0, 2 , 0);
         helper.addToExamBook(examBook, singleExam);
@@ -590,16 +591,12 @@ public class ExamCommandsTest {
 
         assertCommandBehavior("deregexam 2 2",
                 String.format(DeregisterExamCommand.MESSAGE_DEREGISTER_EXAM_SUCCESS, e2Expected, p2),
-                expectedBook,
-                expectedExamBook,
-                false,
-                false,
-                logic.getLastShownList(),
-                logic.getLastShownExamList());
+                expectedBook, expectedExamBook, false, false,
+                logic.getLastShownList(), logic.getLastShownExamList());
     }
 
     @Test
-    public void executeDeregisterExam_validArgsSingleTakerNotRegistered() throws Exception {
+    public void executeDeregisterExam_validArgsSingleTakerNotRegistered_notRegisteredMessage() throws Exception {
         TestDataHelper helper = new TestDataHelper();
         Exam e1 = helper.generateExam(1, false);
         List<Exam> singleExam = helper.generateExamList(e1);
@@ -613,16 +610,35 @@ public class ExamCommandsTest {
 
         assertCommandBehavior("deregexam 1 1",
                 DeregisterExamCommand.MESSAGE_EXAM_NOT_REGISTERED,
-                addressBook,
-                examBook,
-                false,
-                false,
-                logic.getLastShownList(),
-                logic.getLastShownExamList());
+                addressBook, examBook, false, false,
+                logic.getLastShownList(), logic.getLastShownExamList());
     }
 
     @Test
-    public void executeDeregisterExam_invalidArgsForPersonIndex() throws Exception {
+    public void executeDeregisterExam_invalidNumberOfArgs() throws Exception {
+        String expectedMessage = String.format(MESSAGE_WRONG_NUMBER_ARGUMENTS , 2, 1,
+                DeregisterExamCommand.MESSAGE_USAGE);
+        assertCommandBehavior("deregexam 1", expectedMessage, CommandAssertions.TargetType.EB);
+
+        expectedMessage = String.format(MESSAGE_WRONG_NUMBER_ARGUMENTS , 2, 3,
+                DeregisterExamCommand.MESSAGE_USAGE);
+        CommandAssertions.assertCommandBehavior("deregexam 1 1 1", expectedMessage, CommandAssertions.TargetType.EB);
+
+        expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeregisterExamCommand.MESSAGE_USAGE);
+        assertCommandBehavior("deregexam", expectedMessage, CommandAssertions.TargetType.EB);
+        assertCommandBehavior("deregexam ", expectedMessage, CommandAssertions.TargetType.EB);
+    }
+
+    @Test
+    public void executeDeregisterExam_invalidParsedArgs_invalidCommandMessage() throws Exception {
+        String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeregisterExamCommand.MESSAGE_USAGE);
+        assertCommandBehavior("deregexam not_a_number 2", expectedMessage, CommandAssertions.TargetType.EB);
+        assertCommandBehavior("deregexam 2 not_a_number", expectedMessage, CommandAssertions.TargetType.EB);
+        assertCommandBehavior("deregexam not_a_number not_a_number", expectedMessage, CommandAssertions.TargetType.EB);
+    }
+
+    @Test
+    public void executeDeregisterExam_invalidArgsForPersonIndex_invalidPersonIndexMessage() throws Exception {
         TestDataHelper helper = new TestDataHelper();
         Exam e1 = helper.generateExam(1, false);
         List<Exam> singleExam = helper.generateExamList(e1);
@@ -636,14 +652,16 @@ public class ExamCommandsTest {
 
         assertCommandBehavior("deregexam 2 1",
                 Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX,
-                addressBook, examBook);
+                addressBook, examBook, false, false,
+                logic.getLastShownList(), logic.getLastShownExamList());
         assertCommandBehavior("deregexam 2 2",
                 Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX,
-                addressBook, examBook);
+                addressBook, examBook, false, false,
+                logic.getLastShownList(), logic.getLastShownExamList());
     }
 
     @Test
-    public void executeDeregisterExam_invalidArgsForExamIndex() throws Exception {
+    public void executeDeregisterExam_invalidArgsForExamIndex_invalidExamIndexMessage() throws Exception {
         TestDataHelper helper = new TestDataHelper();
         Exam e1 = helper.generateExam(1, false);
         List<Exam> singleExam = helper.generateExamList(e1);
@@ -657,11 +675,12 @@ public class ExamCommandsTest {
 
         assertCommandBehavior("deregexam 1 2",
                 Messages.MESSAGE_INVALID_EXAM_DISPLAYED_INDEX,
-                addressBook, examBook);
+                addressBook, examBook, false, false,
+                logic.getLastShownList(), logic.getLastShownExamList());
     }
 
     @Test
-    public void executeDeregisterExam_personMissingInAddressBook() throws Exception {
+    public void executeDeregisterExam_personMissingInAddressBook_personMissingMessage() throws Exception {
         TestDataHelper helper = new TestDataHelper();
         Exam e1 = helper.generateExam(1, false);
         List<Exam> singleExam = helper.generateExamList(e1);
@@ -674,11 +693,12 @@ public class ExamCommandsTest {
 
         assertCommandBehavior("deregexam 1 1",
                 MESSAGE_PERSON_NOT_IN_ADDRESSBOOK,
-                addressBook, examBook);
+                addressBook, examBook, false, false,
+                logic.getLastShownList(), logic.getLastShownExamList());
     }
 
     @Test
-    public void executeDeregisterExam_examMissingInExamBook() throws Exception {
+    public void executeDeregisterExam_examMissingInExamBook_examMissingMessage() throws Exception {
         TestDataHelper helper = new TestDataHelper();
         Exam e1 = helper.generateExam(1, false, 1);
         List<Exam> singleExam = helper.generateExamList(e1);
@@ -691,23 +711,24 @@ public class ExamCommandsTest {
 
         assertCommandBehavior("deregexam 1 1",
                 Messages.MESSAGE_EXAM_NOT_IN_EXAMBOOK,
-                addressBook, examBook);
+                addressBook, examBook, false, false,
+                logic.getLastShownList(), logic.getLastShownExamList());
     }
 
     @Test
-    public void executeViewExam_invalidArgsFormat() throws Exception {
+    public void executeViewExam_invalidArgsFormat_invalidCommandMessage() throws Exception {
         String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, ViewExamsCommand.MESSAGE_USAGE);
-        assertCommandBehavior("viewexams ", expectedMessage);
-        assertCommandBehavior("viewexams arg not number", expectedMessage);
+        assertCommandBehavior("viewexams ", expectedMessage, CommandAssertions.TargetType.AB);
+        assertCommandBehavior("viewexams arg not number", expectedMessage, CommandAssertions.TargetType.AB);
     }
 
     @Test
-    public void executeViewExams_invalidIndex() throws Exception {
+    public void executeViewExams_invalidIndex_invalidIndexMessage() throws Exception {
         assertInvalidIndexBehaviorForCommand("viewexams");
     }
 
     @Test
-    public void executeViewExams_hidesPrivateExams() throws Exception {
+    public void executeViewExams_validArgs_hidesPrivateExams() throws Exception {
         TestDataHelper helper = new TestDataHelper();
         Exam e2 = helper.generateExam(2, true, 1);
 
@@ -752,7 +773,7 @@ public class ExamCommandsTest {
     }
 
     @Test
-    public void executeTryToViewExams_personMissingInAddressBookErrorMessage() throws Exception {
+    public void executeTryToViewExams_missingPerson_personMissingMessage() throws Exception {
         TestDataHelper helper = new TestDataHelper();
         Person p1 = helper.generatePerson(1, false);
         Person p2 = helper.generatePerson(2, false, 2, false, 1);
@@ -771,7 +792,7 @@ public class ExamCommandsTest {
     }
 
     @Test
-    public void executeClearSuccessWithExams() throws Exception {
+    public void executeClear_validData_success() throws Exception {
         TestDataHelper helper = new TestDataHelper();
 
         List<Person> threePersons = setUpThreePersonsStandardExam(helper);
@@ -794,7 +815,7 @@ public class ExamCommandsTest {
     }
 
     @Test
-    public void executeDeleteRemovesCorrectPersonAndExam() throws Exception {
+    public void executeDelete_validData_removesCorrectPersonAndExam() throws Exception {
         TestDataHelper helper = new TestDataHelper();
         Person p2 = helper.generatePerson(2, true, 2, true, 2);
         Person p3 = helper.generatePerson(3, true, 3, false, 1);
@@ -827,7 +848,7 @@ public class ExamCommandsTest {
     }
 
     @Test
-    public void executeDeleteRemovesCorrectPersonMissingExam() throws Exception {
+    public void executeDelete_validArgs_removesCorrectPersonMissingExamMessage() throws Exception {
         TestDataHelper helper = new TestDataHelper();
         List<Person> lastShownList = setUpThreePersonsStandardExam(helper);
         helper.addToAddressBook(addressBook, lastShownList);
@@ -837,12 +858,12 @@ public class ExamCommandsTest {
         examBook.addExam(e3);
 
         assertCommandBehavior("delete 2",
-                Messages.MESSAGE_EXAM_NOT_IN_EXAMBOOK, examBook,
-                false);
+                Messages.MESSAGE_EXAM_NOT_IN_EXAMBOOK, examBook, false,
+                Collections.emptyList(), false);
     }
 
     @Test
-    public void executeClearExamsSuccessWithAddressBook() throws Exception {
+    public void executeClearExams_validFormat_successWithAddressBook() throws Exception {
         TestDataHelper helper = new TestDataHelper();
 
         List<Exam> threeExams = setUpThreeExamsWithTakers(helper , 0, 2, 1);
@@ -868,7 +889,7 @@ public class ExamCommandsTest {
     }
 
     @Test
-    public void executeDeleteExamRemovesCorrectExamInAddressBook() throws Exception {
+    public void executeDeleteExam_validArgs_removesCorrectExamInAddressBook() throws Exception {
         TestDataHelper helper = new TestDataHelper();
         List<Exam> threeExams = setUpThreeExamsWithTakers(helper, 0, 2, 1);
         helper.addToExamBook(examBook, threeExams);
@@ -898,7 +919,7 @@ public class ExamCommandsTest {
     }
 
     @Test
-    public void executeEditExamSuccess_changesAddressBook() throws Exception {
+    public void executeEditExam_validArgs_changesAddressBookSuccess() throws Exception {
         TestDataHelper helper = new TestDataHelper();
         List<Exam> threeExams = setUpThreeExamsWithTakers(helper, 0, 2, 1);
         helper.addToExamBook(examBook, threeExams);

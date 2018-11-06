@@ -66,7 +66,7 @@ public class FeesCommandsTest {
     @Test
     public void executeAddFeesCommandInvalidData() throws Exception {
         assertCommandBehavior(
-                "editfees 2 1.111 01-01-2018", Fees.MESSAGE_FEES_CONSTRAINTS);
+                "editfees 2 1.111 01-01-2018", Fees.MESSAGE_FEES_CONSTRAINTS, CommandAssertions.TargetType.AB);
     }
 
     @Test
@@ -261,7 +261,7 @@ public class FeesCommandsTest {
     @Test
     public void executeViewFeesInvalidArgsFormat() throws Exception {
         String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, ViewFeesCommand.MESSAGE_USAGE);
-        assertCommandBehavior("viewfees ", expectedMessage);
-        assertCommandBehavior("viewfees arg not number", expectedMessage);
+        assertCommandBehavior("viewfees ", expectedMessage, CommandAssertions.TargetType.AB);
+        assertCommandBehavior("viewfees arg not number", expectedMessage, CommandAssertions.TargetType.AB);
     }
 }

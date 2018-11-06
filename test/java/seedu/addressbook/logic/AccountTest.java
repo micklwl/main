@@ -84,7 +84,8 @@ public class AccountTest {
     @Test
     public void executeAddAccountInvalidArgument() throws Exception {
         assertCommandBehavior("addacc",
-                String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddAccountCommand.MESSAGE_USAGE));
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddAccountCommand.MESSAGE_USAGE),
+                CommandAssertions.TargetType.AB);
     }
 
     @Test
@@ -96,7 +97,8 @@ public class AccountTest {
             "addacc 2 username password TUTOR TrailingArgument"};
         for (String input : inputs) {
             assertCommandBehavior(input,
-                    String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddAccountCommand.MESSAGE_USAGE));
+                    String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddAccountCommand.MESSAGE_USAGE),
+                    CommandAssertions.TargetType.AB);
         }
     }
 
@@ -231,8 +233,8 @@ public class AccountTest {
     @Test
     public void executeDeleteAccountInvalidArgsFormat() throws Exception {
         String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteAccountCommand.MESSAGE_USAGE);
-        assertCommandBehavior("delacc ", expectedMessage);
-        assertCommandBehavior("delacc arg not number", expectedMessage);
+        assertCommandBehavior("delacc ", expectedMessage, CommandAssertions.TargetType.AB);
+        assertCommandBehavior("delacc arg not number", expectedMessage, CommandAssertions.TargetType.AB);
     }
 
     @Test
@@ -519,12 +521,12 @@ public class AccountTest {
     @Test
     public void executeLogoutNotLoggedIn() throws Exception {
         privilege.resetPrivilege();
-        assertCommandBehavior("logout", MESSAGE_NOT_LOGGED_IN);
+        assertCommandBehavior("logout", MESSAGE_NOT_LOGGED_IN, CommandAssertions.TargetType.AB);
     }
 
     @Test
     public void executeLogoutSuccess() throws Exception {
-        assertCommandBehavior("logout", LogoutCommand.MESSAGE_SUCCESS);
+        assertCommandBehavior("logout", LogoutCommand.MESSAGE_SUCCESS, CommandAssertions.TargetType.AB);
         assertTrue(privilege.isBase());
     }
 
