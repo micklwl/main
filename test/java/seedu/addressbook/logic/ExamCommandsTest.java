@@ -622,7 +622,7 @@ public class ExamCommandsTest {
 
         expectedMessage = String.format(MESSAGE_WRONG_NUMBER_ARGUMENTS , 2, 3,
                 DeregisterExamCommand.MESSAGE_USAGE);
-        CommandAssertions.assertCommandBehavior("deregexam 1 1 1", expectedMessage, CommandAssertions.TargetType.EB);
+        assertCommandBehavior("deregexam 1 1 1", expectedMessage, CommandAssertions.TargetType.EB);
 
         expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeregisterExamCommand.MESSAGE_USAGE);
         assertCommandBehavior("deregexam", expectedMessage, CommandAssertions.TargetType.EB);
