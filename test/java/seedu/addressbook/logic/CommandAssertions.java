@@ -29,12 +29,12 @@ public class CommandAssertions {
     private static StatisticsBook statisticsBook;
 
     /**
-     * Enum used to indicate which storage file is the command targeting
+     * Enum used to indicate which object is the command targeting
      * */
     public enum TargetType {
-        AB,
-        EB,
-        SB
+        PERSONS,
+        EXAMS,
+        STATS
     }
 
     public static void setData(StorageFile saveFile, AddressBook addressBook, Logic logic) {
@@ -58,10 +58,10 @@ public class CommandAssertions {
      */
     public static void assertCommandBehavior(String inputCommand, String expectedMessage,
                                              TargetType targetType) throws Exception {
-        if (targetType.equals(TargetType.AB)) {
+        if (targetType.equals(TargetType.PERSONS)) {
             assertCommandBehavior(inputCommand, expectedMessage, AddressBook.empty(),
                     false, Collections.emptyList());
-        } else if (targetType.equals(TargetType.EB)) {
+        } else if (targetType.equals(TargetType.EXAMS)) {
             assertCommandBehavior(inputCommand, expectedMessage, ExamBook.empty(),
                     false, Collections.emptyList());
         }
@@ -454,9 +454,9 @@ public class CommandAssertions {
         logic.setLastShownList(lastShownList);
 
         String errorMessage = "";
-        if (targetType.equals(TargetType.AB)) {
+        if (targetType.equals(TargetType.PERSONS)) {
             errorMessage = MESSAGE_INVALID_PERSON_DISPLAYED_INDEX;
-        } else if (targetType.equals(TargetType.EB)) {
+        } else if (targetType.equals(TargetType.EXAMS)) {
             errorMessage = MESSAGE_INVALID_EXAM_DISPLAYED_INDEX;
         }
 

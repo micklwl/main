@@ -85,7 +85,7 @@ public class AccountTest {
     public void executeAddAccountInvalidArgument() throws Exception {
         assertCommandBehavior("addacc",
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddAccountCommand.MESSAGE_USAGE),
-                CommandAssertions.TargetType.AB);
+                CommandAssertions.TargetType.PERSONS);
     }
 
     @Test
@@ -98,13 +98,14 @@ public class AccountTest {
         for (String input : inputs) {
             assertCommandBehavior(input,
                     String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddAccountCommand.MESSAGE_USAGE),
-                    CommandAssertions.TargetType.AB);
+                    CommandAssertions.TargetType.PERSONS);
         }
     }
 
     @Test
     public void executeAddAccountInvalidIndex() throws Exception {
-        assertInvalidIndexBehaviorForCommand("addacc", "", "username password BASIC", CommandAssertions.TargetType.AB);
+        assertInvalidIndexBehaviorForCommand("addacc", "", "username password BASIC",
+                CommandAssertions.TargetType.PERSONS);
     }
 
     @Test
@@ -233,13 +234,13 @@ public class AccountTest {
     @Test
     public void executeDeleteAccountInvalidArgsFormat() throws Exception {
         String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteAccountCommand.MESSAGE_USAGE);
-        assertCommandBehavior("delacc ", expectedMessage, CommandAssertions.TargetType.AB);
-        assertCommandBehavior("delacc arg not number", expectedMessage, CommandAssertions.TargetType.AB);
+        assertCommandBehavior("delacc ", expectedMessage, CommandAssertions.TargetType.PERSONS);
+        assertCommandBehavior("delacc arg not number", expectedMessage, CommandAssertions.TargetType.PERSONS);
     }
 
     @Test
     public void executeDeleteAccountInvalidIndex() throws Exception {
-        assertInvalidIndexBehaviorForCommand("delacc", CommandAssertions.TargetType.AB);
+        assertInvalidIndexBehaviorForCommand("delacc", CommandAssertions.TargetType.PERSONS);
     }
 
     @Test
@@ -521,12 +522,12 @@ public class AccountTest {
     @Test
     public void executeLogoutNotLoggedIn() throws Exception {
         privilege.resetPrivilege();
-        assertCommandBehavior("logout", MESSAGE_NOT_LOGGED_IN, CommandAssertions.TargetType.AB);
+        assertCommandBehavior("logout", MESSAGE_NOT_LOGGED_IN, CommandAssertions.TargetType.PERSONS);
     }
 
     @Test
     public void executeLogoutSuccess() throws Exception {
-        assertCommandBehavior("logout", LogoutCommand.MESSAGE_SUCCESS, CommandAssertions.TargetType.AB);
+        assertCommandBehavior("logout", LogoutCommand.MESSAGE_SUCCESS, CommandAssertions.TargetType.PERSONS);
         assertTrue(privilege.isBase());
     }
 

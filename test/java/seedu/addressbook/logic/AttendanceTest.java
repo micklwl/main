@@ -103,8 +103,8 @@ public class AttendanceTest {
     @Test
     public void executeUpdateAttendanceInvalidArgsFormat() throws Exception {
         String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, UpdateAttendanceCommand.MESSAGE_USAGE);
-        assertCommandBehavior("attendance 1 d/29-09-1996 att/ ", expectedMessage, CommandAssertions.TargetType.AB);
-        assertCommandBehavior("attendance 2", expectedMessage, CommandAssertions.TargetType.AB);
+        assertCommandBehavior("attendance 1 d/29-09-1996 att/ ", expectedMessage, CommandAssertions.TargetType.PERSONS);
+        assertCommandBehavior("attendance 2", expectedMessage, CommandAssertions.TargetType.PERSONS);
     }
 
     @Test
@@ -240,7 +240,7 @@ public class AttendanceTest {
     public void executeViewAttendancePersonInvalidArgsFormat() throws Exception {
         String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT,
                 ViewAttendancePersonCommand.MESSAGE_USAGE);
-        assertCommandBehavior("viewAttenPerson ", expectedMessage, CommandAssertions.TargetType.AB);
+        assertCommandBehavior("viewAttenPerson ", expectedMessage, CommandAssertions.TargetType.PERSONS);
     }
 
     @Test
@@ -310,7 +310,8 @@ public class AttendanceTest {
     @Test
     public void executeReplaceAttendanceInvalidArgsFormat() throws Exception {
         String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, ReplaceAttendanceCommand.MESSAGE_USAGE);
-        assertCommandBehavior("replaceAtten 1 d/29-09-1996 att/ ", expectedMessage, CommandAssertions.TargetType.AB);
+        assertCommandBehavior("replaceAtten 1 d/29-09-1996 att/ ", expectedMessage,
+                CommandAssertions.TargetType.PERSONS);
     }
 
     @Test
@@ -438,8 +439,8 @@ public class AttendanceTest {
     @Test
     public void executeViewAttendanceDateInvalidArgsFormat() throws Exception {
         String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, ViewAttendanceDateCommand.MESSAGE_USAGE);
-        assertCommandBehavior("viewAttenDate ", expectedMessage, CommandAssertions.TargetType.AB);
-        assertCommandBehavior("viewAttenDate d/", expectedMessage, CommandAssertions.TargetType.AB);
+        assertCommandBehavior("viewAttenDate ", expectedMessage, CommandAssertions.TargetType.PERSONS);
+        assertCommandBehavior("viewAttenDate d/", expectedMessage, CommandAssertions.TargetType.PERSONS);
     }
 
     @Test

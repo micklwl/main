@@ -113,7 +113,7 @@ public class PrivilegeTest {
                 RaisePrivilegeCommand.MESSAGE_USAGE);
 
         for (String input: inputs) {
-            assertCommandBehavior(input, expectedMessage, CommandAssertions.TargetType.AB);
+            assertCommandBehavior(input, expectedMessage, CommandAssertions.TargetType.PERSONS);
         }
         assertEquals(privilege.getUser(), new BasicUser());
     }
@@ -132,7 +132,7 @@ public class PrivilegeTest {
             final String expectedMessage = String.format(MESSAGE_WRONG_NUMBER_ARGUMENTS, requiredArgument,
                     inputToOutput.getSecond(), RaisePrivilegeCommand.MESSAGE_USAGE);
             assertCommandBehavior(inputToOutput.getFirst(),
-                    expectedMessage, CommandAssertions.TargetType.AB);
+                    expectedMessage, CommandAssertions.TargetType.PERSONS);
         }
         assertEquals(privilege.getUser(), new BasicUser());
     }
@@ -141,7 +141,7 @@ public class PrivilegeTest {
     public void executeRaisePrivilegeWrongPassword() throws Exception {
         String expectedMessage = RaisePrivilegeCommand.MESSAGE_WRONG_PASSWORD;
         assertCommandBehavior("raise wrong_password", expectedMessage,
-                CommandAssertions.TargetType.AB);
+                CommandAssertions.TargetType.PERSONS);
         assertEquals(privilege.getUser(), new BasicUser());
     }
 
@@ -152,7 +152,7 @@ public class PrivilegeTest {
         privilege.setMyPerson(person);
         String expectedMessage = String.format(RaisePrivilegeCommand.MESSAGE_LOGGED_IN, person.getName());
         assertCommandBehavior("raise default_pw", expectedMessage,
-                CommandAssertions.TargetType.AB);
+                CommandAssertions.TargetType.PERSONS);
         assertEquals(privilege.getUser(), new BasicUser());
     }
 
@@ -161,7 +161,7 @@ public class PrivilegeTest {
         String defaultPassword = AddressBook.DEFAULT_MASTER_PASSWORD;
         assertCommandBehavior("raise " + defaultPassword,
                 String.format(RaisePrivilegeCommand.MESSAGE_SUCCESS, new AdminUser().getPrivilegeLevelAsString()),
-                CommandAssertions.TargetType.AB);
+                CommandAssertions.TargetType.PERSONS);
         assertEquals(privilege.getUser(), new AdminUser());
     }
 
@@ -170,7 +170,7 @@ public class PrivilegeTest {
         addressBook.setMasterPassword("new_Password");
         assertCommandBehavior("raise new_Password",
                 String.format(RaisePrivilegeCommand.MESSAGE_SUCCESS, new AdminUser().getPrivilegeLevelAsString()),
-                CommandAssertions.TargetType.AB);
+                CommandAssertions.TargetType.PERSONS);
         assertEquals(privilege.getUser(), new AdminUser());
     }
 
@@ -179,7 +179,7 @@ public class PrivilegeTest {
         privilege.raiseToAdmin();
         assertCommandBehavior("perm",
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT,
-                        SetPermanentAdminCommand.MESSAGE_USAGE), CommandAssertions.TargetType.AB);
+                        SetPermanentAdminCommand.MESSAGE_USAGE), CommandAssertions.TargetType.PERSONS);
         assertFalse(addressBook.isPermAdmin());
     }
 
@@ -188,7 +188,7 @@ public class PrivilegeTest {
         privilege.raiseToAdmin();
         assertCommandBehavior("perm wut",
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT,
-                        SetPermanentAdminCommand.MESSAGE_USAGE), CommandAssertions.TargetType.AB);
+                        SetPermanentAdminCommand.MESSAGE_USAGE), CommandAssertions.TargetType.PERSONS);
         assertFalse(addressBook.isPermAdmin());
     }
 
@@ -196,11 +196,11 @@ public class PrivilegeTest {
     public void executeSetPermSuccess() throws Exception {
         privilege.raiseToAdmin();
         assertCommandBehavior("perm true",
-                String.format(SetPermanentAdminCommand.MESSAGE_SUCCESS, ""), CommandAssertions.TargetType.AB);
+                String.format(SetPermanentAdminCommand.MESSAGE_SUCCESS, ""), CommandAssertions.TargetType.PERSONS);
         assertTrue(addressBook.isPermAdmin());
 
         assertCommandBehavior("perm false",
-                String.format(SetPermanentAdminCommand.MESSAGE_SUCCESS, " not"), CommandAssertions.TargetType.AB);
+                String.format(SetPermanentAdminCommand.MESSAGE_SUCCESS, " not"), CommandAssertions.TargetType.PERSONS);
         assertFalse(addressBook.isPermAdmin());
     }
 
@@ -227,7 +227,7 @@ public class PrivilegeTest {
             Command command = parser.parseCommand(input);
             assertCommandBehavior(input, String.format(MESSAGE_INSUFFICIENT_PRIVILEGE,
                     privilege.getRequiredPrivilegeAsString(command), privilege.getLevelAsString()),
-                    CommandAssertions.TargetType.AB);
+                    CommandAssertions.TargetType.PERSONS);
         }
     }
 }

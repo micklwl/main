@@ -141,23 +141,23 @@ public class ExamCommandsTest {
 
         String expectedMessage = Messages.MESSAGE_DATE_CONSTRAINTS;
         assertCommandBehavior(String.format(addExamCommandFormatString, invalidDateArg,
-                validStartTimeArg, validEndTimeArg), expectedMessage, CommandAssertions.TargetType.EB);
+                validStartTimeArg, validEndTimeArg), expectedMessage, CommandAssertions.TargetType.EXAMS);
         assertCommandBehavior(String.format(addExamCommandFormatString, invalidDateArg2,
-                validStartTimeArg, validEndTimeArg), expectedMessage, CommandAssertions.TargetType.EB);
+                validStartTimeArg, validEndTimeArg), expectedMessage, CommandAssertions.TargetType.EXAMS);
 
         expectedMessage = Exam.MESSAGE_TIME_CONSTRAINTS;
         assertCommandBehavior(String.format(addExamCommandFormatString, validDateArg,
-                invalidStartTimeArg, validEndTimeArg), expectedMessage, CommandAssertions.TargetType.EB);
+                invalidStartTimeArg, validEndTimeArg), expectedMessage, CommandAssertions.TargetType.EXAMS);
         assertCommandBehavior(String.format(addExamCommandFormatString, validDateArg,
-                invalidStartTimeArg2, validEndTimeArg), expectedMessage, CommandAssertions.TargetType.EB);
+                invalidStartTimeArg2, validEndTimeArg), expectedMessage, CommandAssertions.TargetType.EXAMS);
         assertCommandBehavior(String.format(addExamCommandFormatString, validDateArg,
-                validStartTimeArg, invalidEndTimeArg), expectedMessage, CommandAssertions.TargetType.EB);
+                validStartTimeArg, invalidEndTimeArg), expectedMessage, CommandAssertions.TargetType.EXAMS);
         assertCommandBehavior(String.format(addExamCommandFormatString, validDateArg,
-                validStartTimeArg, invalidEndTimeArg2), expectedMessage, CommandAssertions.TargetType.EB);
+                validStartTimeArg, invalidEndTimeArg2), expectedMessage, CommandAssertions.TargetType.EXAMS);
 
         expectedMessage = Exam.MESSAGE_TIME_INTERVAL_CONSTRAINTS;
         assertCommandBehavior(String.format(addExamCommandFormatString, validDateArg,
-                validStartTimeArg, invalidEndTimeIntervalArg), expectedMessage, CommandAssertions.TargetType.EB);
+                validStartTimeArg, invalidEndTimeIntervalArg), expectedMessage, CommandAssertions.TargetType.EXAMS);
     }
 
     @Test
@@ -216,13 +216,13 @@ public class ExamCommandsTest {
     @Test
     public void executeDeleteExam_invalidArgsFormat_invalidCommandMessage() throws Exception {
         String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteExamCommand.MESSAGE_USAGE);
-        assertCommandBehavior("deleteexam ", expectedMessage, CommandAssertions.TargetType.EB);
-        assertCommandBehavior("deleteexam arg not number", expectedMessage, CommandAssertions.TargetType.EB);
+        assertCommandBehavior("deleteexam ", expectedMessage, CommandAssertions.TargetType.EXAMS);
+        assertCommandBehavior("deleteexam arg not number", expectedMessage, CommandAssertions.TargetType.EXAMS);
     }
 
     @Test
     public void executeDeleteExam_invalidIndex_invalidIndexMessage() throws Exception {
-        assertInvalidIndexBehaviorForCommand("deleteexam", CommandAssertions.TargetType.EB);
+        assertInvalidIndexBehaviorForCommand("deleteexam", CommandAssertions.TargetType.EXAMS);
     }
 
     @Test
@@ -267,14 +267,14 @@ public class ExamCommandsTest {
     @Test
     public void executeEditExam_invalidArgsFormat_invalidCommandMessage() throws Exception {
         String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, EditExamCommand.MESSAGE_USAGE);
-        assertCommandBehavior("editexam ", expectedMessage, CommandAssertions.TargetType.EB);
+        assertCommandBehavior("editexam ", expectedMessage, CommandAssertions.TargetType.EXAMS);
         expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, EditExamCommand.MESSAGE_USAGE);
-        assertCommandBehavior("editexam arg not number", expectedMessage, CommandAssertions.TargetType.EB);
+        assertCommandBehavior("editexam arg not number", expectedMessage, CommandAssertions.TargetType.EXAMS);
     }
 
     @Test
     public void executeEditExam_invalidIndex_invalidIndexMessage() throws Exception {
-        assertInvalidIndexBehaviorForCommand("editexam 4 s/Mathematics", CommandAssertions.TargetType.EB);
+        assertInvalidIndexBehaviorForCommand("editexam 4 s/Mathematics", CommandAssertions.TargetType.EXAMS);
     }
 
     @Test
@@ -413,11 +413,11 @@ public class ExamCommandsTest {
     public void executeRegisterExam_invalidParsedArgs() throws Exception {
         String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, RegisterExamCommand.MESSAGE_USAGE);
         assertCommandBehavior("regexam not_a_number 2", expectedMessage,
-                CommandAssertions.TargetType.EB);
+                CommandAssertions.TargetType.EXAMS);
         assertCommandBehavior("regexam 2 not_a_number", expectedMessage,
-                CommandAssertions.TargetType.EB);
+                CommandAssertions.TargetType.EXAMS);
         assertCommandBehavior("regexam not_a_number not_a_number", expectedMessage,
-                CommandAssertions.TargetType.EB);
+                CommandAssertions.TargetType.EXAMS);
     }
 
     @Test
@@ -446,15 +446,15 @@ public class ExamCommandsTest {
     public void executeRegisterExam_invalidNumberOfArgs_invalidNumberMessage() throws Exception {
         String expectedMessage = String.format(MESSAGE_WRONG_NUMBER_ARGUMENTS, 2, 1,
                 RegisterExamCommand.MESSAGE_USAGE);
-        assertCommandBehavior("regexam 1", expectedMessage, CommandAssertions.TargetType.EB);
+        assertCommandBehavior("regexam 1", expectedMessage, CommandAssertions.TargetType.EXAMS);
 
         expectedMessage = String.format(MESSAGE_WRONG_NUMBER_ARGUMENTS, 2, 3,
                 RegisterExamCommand.MESSAGE_USAGE);
-        assertCommandBehavior("regexam 1 1 1", expectedMessage, CommandAssertions.TargetType.EB);
+        assertCommandBehavior("regexam 1 1 1", expectedMessage, CommandAssertions.TargetType.EXAMS);
 
         expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, RegisterExamCommand.MESSAGE_USAGE);
-        assertCommandBehavior("regexam", expectedMessage, CommandAssertions.TargetType.EB);
-        assertCommandBehavior("regexam ", expectedMessage, CommandAssertions.TargetType.EB);
+        assertCommandBehavior("regexam", expectedMessage, CommandAssertions.TargetType.EXAMS);
+        assertCommandBehavior("regexam ", expectedMessage, CommandAssertions.TargetType.EXAMS);
     }
 
     @Test
@@ -617,23 +617,26 @@ public class ExamCommandsTest {
     public void executeDeregisterExam_invalidNumberOfArgs() throws Exception {
         String expectedMessage = String.format(MESSAGE_WRONG_NUMBER_ARGUMENTS , 2, 1,
                 DeregisterExamCommand.MESSAGE_USAGE);
-        assertCommandBehavior("deregexam 1", expectedMessage, CommandAssertions.TargetType.EB);
+        assertCommandBehavior("deregexam 1", expectedMessage, CommandAssertions.TargetType.EXAMS);
 
         expectedMessage = String.format(MESSAGE_WRONG_NUMBER_ARGUMENTS , 2, 3,
                 DeregisterExamCommand.MESSAGE_USAGE);
-        assertCommandBehavior("deregexam 1 1 1", expectedMessage, CommandAssertions.TargetType.EB);
+        assertCommandBehavior("deregexam 1 1 1", expectedMessage, CommandAssertions.TargetType.EXAMS);
 
         expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeregisterExamCommand.MESSAGE_USAGE);
-        assertCommandBehavior("deregexam", expectedMessage, CommandAssertions.TargetType.EB);
-        assertCommandBehavior("deregexam ", expectedMessage, CommandAssertions.TargetType.EB);
+        assertCommandBehavior("deregexam", expectedMessage, CommandAssertions.TargetType.EXAMS);
+        assertCommandBehavior("deregexam ", expectedMessage, CommandAssertions.TargetType.EXAMS);
     }
 
     @Test
     public void executeDeregisterExam_invalidParsedArgs_invalidCommandMessage() throws Exception {
         String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeregisterExamCommand.MESSAGE_USAGE);
-        assertCommandBehavior("deregexam not_a_number 2", expectedMessage, CommandAssertions.TargetType.EB);
-        assertCommandBehavior("deregexam 2 not_a_number", expectedMessage, CommandAssertions.TargetType.EB);
-        assertCommandBehavior("deregexam not_a_number not_a_number", expectedMessage, CommandAssertions.TargetType.EB);
+        assertCommandBehavior("deregexam not_a_number 2", expectedMessage,
+                CommandAssertions.TargetType.EXAMS);
+        assertCommandBehavior("deregexam 2 not_a_number", expectedMessage,
+                CommandAssertions.TargetType.EXAMS);
+        assertCommandBehavior("deregexam not_a_number not_a_number", expectedMessage,
+                CommandAssertions.TargetType.EXAMS);
     }
 
     @Test
@@ -717,13 +720,13 @@ public class ExamCommandsTest {
     @Test
     public void executeViewExam_invalidArgsFormat_invalidCommandMessage() throws Exception {
         String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, ViewExamsCommand.MESSAGE_USAGE);
-        assertCommandBehavior("viewexams ", expectedMessage, CommandAssertions.TargetType.AB);
-        assertCommandBehavior("viewexams arg not number", expectedMessage, CommandAssertions.TargetType.AB);
+        assertCommandBehavior("viewexams ", expectedMessage, CommandAssertions.TargetType.PERSONS);
+        assertCommandBehavior("viewexams arg not number", expectedMessage, CommandAssertions.TargetType.PERSONS);
     }
 
     @Test
     public void executeViewExams_invalidIndex_invalidIndexMessage() throws Exception {
-        assertInvalidIndexBehaviorForCommand("viewexams", CommandAssertions.TargetType.AB);
+        assertInvalidIndexBehaviorForCommand("viewexams", CommandAssertions.TargetType.PERSONS);
     }
 
     @Test

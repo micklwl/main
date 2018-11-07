@@ -66,7 +66,7 @@ public class FeesCommandsTest {
     @Test
     public void executeAddFeesCommandInvalidData() throws Exception {
         assertCommandBehavior(
-                "editfees 2 1.111 01-01-2018", Fees.MESSAGE_FEES_CONSTRAINTS, CommandAssertions.TargetType.AB);
+                "editfees 2 1.111 01-01-2018", Fees.MESSAGE_FEES_CONSTRAINTS, CommandAssertions.TargetType.PERSONS);
     }
 
     @Test
@@ -255,13 +255,13 @@ public class FeesCommandsTest {
 
     @Test
     public void executeViewFeesCommandInvalidIndex() throws Exception {
-        assertInvalidIndexBehaviorForCommand("viewfees", CommandAssertions.TargetType.AB);
+        assertInvalidIndexBehaviorForCommand("viewfees", CommandAssertions.TargetType.PERSONS);
     }
 
     @Test
     public void executeViewFeesInvalidArgsFormat() throws Exception {
         String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, ViewFeesCommand.MESSAGE_USAGE);
-        assertCommandBehavior("viewfees ", expectedMessage, CommandAssertions.TargetType.AB);
-        assertCommandBehavior("viewfees arg not number", expectedMessage, CommandAssertions.TargetType.AB);
+        assertCommandBehavior("viewfees ", expectedMessage, CommandAssertions.TargetType.PERSONS);
+        assertCommandBehavior("viewfees arg not number", expectedMessage, CommandAssertions.TargetType.PERSONS);
     }
 }
