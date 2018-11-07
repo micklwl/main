@@ -1,6 +1,7 @@
 package seedu.addressbook.logic;
 
 import static seedu.addressbook.common.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
+import static seedu.addressbook.common.Messages.MESSAGE_NOT_LOGGED_IN_OR_WRONG_TARGET;
 import static seedu.addressbook.common.Messages.MESSAGE_NO_NON_PRIVATE_EXAMS;
 import static seedu.addressbook.common.Messages.MESSAGE_PERSON_NOT_IN_ADDRESSBOOK;
 import static seedu.addressbook.common.Messages.MESSAGE_WRONG_NUMBER_ARGUMENTS;
@@ -31,6 +32,7 @@ import seedu.addressbook.common.Messages;
 import seedu.addressbook.data.AddressBook;
 import seedu.addressbook.data.ExamBook;
 import seedu.addressbook.data.StatisticsBook;
+import seedu.addressbook.data.account.Account;
 import seedu.addressbook.data.person.Exam;
 import seedu.addressbook.data.person.Person;
 import seedu.addressbook.data.person.ReadOnlyExam;
@@ -49,7 +51,7 @@ public class ExamCommandsTest {
      */
     @Rule
     public TemporaryFolder saveFolder = new TemporaryFolder();
-
+    private Privilege privilege;
     private AddressBook addressBook;
     private ExamBook examBook;
     private Logic logic;
@@ -68,9 +70,7 @@ public class ExamCommandsTest {
         addressBook = new AddressBook();
         examBook = new ExamBook();
         StatisticsBook statisticBook = new StatisticsBook();
-        // Privilege set to admin to allow all commands.
-        // Privilege restrictions are tested separately under PrivilegeTest.
-        Privilege privilege = new Privilege(new AdminUser());
+        privilege = new Privilege(new AdminUser());
 
         saveFile.save(addressBook);
         saveFile.saveExam(examBook);
@@ -718,7 +718,7 @@ public class ExamCommandsTest {
     }
 
     @Test
-    public void executeViewExam_invalidArgsFormat_invalidCommandMessage() throws Exception {
+    public void executeViewExams_invalidArgsFormat_invalidCommandMessage() throws Exception {
         String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, ViewExamsCommand.MESSAGE_USAGE);
         assertCommandBehavior("viewexams ", expectedMessage, CommandAssertions.TargetType.PERSONS);
         assertCommandBehavior("viewexams arg not number", expectedMessage, CommandAssertions.TargetType.PERSONS);
@@ -788,6 +788,73 @@ public class ExamCommandsTest {
 
         assertCommandBehavior("viewexams 2",
                 MESSAGE_PERSON_NOT_IN_ADDRESSBOOK,
+                expected,
+                false,
+                lastShownList);
+    }
+
+    @Test
+    public void executeTryToViewExams_loggedinStudentWrongTarget_errorMessage() throws Exception {
+        final TestDataHelper helper = new TestDataHelper();
+        Person p1 = helper.generatePerson(1, false, 1, false, 1);
+        Person p2 = helper.generatePerson(2, false);
+        p1.setAccount(new Account("username", "password", "Basic"));
+        List<Person> lastShownList = helper.generatePersonList(p1, p2);
+        logic.setLastShownList(lastShownList);
+        addressBook.addPerson(p1);
+        addressBook.addPerson(p2);
+
+        privilege.resetPrivilege();
+        privilege.setMyPerson(p1);
+
+        assertCommandBehavior("viewexams 2", MESSAGE_NOT_LOGGED_IN_OR_WRONG_TARGET, addressBook, false,
+                lastShownList);
+    }
+
+    @Test
+    public void executeTryToViewExams_loggedInStudentCorrectTarget_success() throws Exception {
+        final TestDataHelper helper = new TestDataHelper();
+        Person p1 = helper.generatePerson(1, false, 1, false, 1);
+        Person p2 = helper.generatePerson(2, false);
+        p1.setAccount(new Account("username", "password", "Basic"));
+        List<Person> lastShownList = helper.generatePersonList(p1, p2);
+        logic.setLastShownList(lastShownList);
+        addressBook.addPerson(p1);
+        addressBook.addPerson(p2);
+
+        AddressBook expected = helper.generateAddressBook(lastShownList);
+
+        privilege.resetPrivilege();
+        privilege.setMyPerson(p1);
+
+        assertCommandBehavior("viewexams 1",
+                String.format(ViewExamsCommand.MESSAGE_VIEW_EXAMS_PERSON_SUCCESS, p1.getAsTextShowOnlyName()),
+                p1.getAsTextShowExam(),
+                expected,
+                false,
+                lastShownList);
+    }
+
+    @Test
+    public void executeTryToViewExams_loggedInTutor_success() throws Exception {
+        final TestDataHelper helper = new TestDataHelper();
+        Person p1 = helper.generatePerson(1, false, 1, false, 1);
+        Person p2 = helper.generatePerson(2, false);
+        p2.setAccount(new Account("username", "password", "Tutor"));
+        List<Person> lastShownList = helper.generatePersonList(p1, p2);
+        logic.setLastShownList(lastShownList);
+        addressBook.addPerson(p1);
+        addressBook.addPerson(p2);
+
+        AddressBook expected = helper.generateAddressBook(lastShownList);
+
+        privilege.resetPrivilege();
+        privilege.raiseToTutor();
+        privilege.setMyPerson(p2);
+
+        assertCommandBehavior("viewexams 1",
+                String.format(ViewExamsCommand.MESSAGE_VIEW_EXAMS_PERSON_SUCCESS, p1.getAsTextShowOnlyName()),
+                p1.getAsTextShowExam(),
                 expected,
                 false,
                 lastShownList);

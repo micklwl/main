@@ -41,4 +41,6 @@ public class Messages {
             + "                                   | |                                 \n"
             + "                                   |_|                                 \n";
     public static final String MESSAGE_NO_NON_PRIVATE_EXAMS = "This person has no non-private exams.";
+    public static final String MESSAGE_NOT_LOGGED_IN_OR_WRONG_TARGET =
+            "You must login and can only check your own details.";
 }

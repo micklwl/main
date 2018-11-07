@@ -214,20 +214,20 @@ public class StorageFileTest {
         storage.save(ab);
         storage.saveStatistics(sb);
         // Checks that the password and isPerm is saved as a new field
-        assertStorageFilesEqual(storage, getStorage("ValidDataWithDefaultPassword.txt"));
+        assertStorageFilesEqual(getStorage("ValidDataWithDefaultPassword.txt"), storage);
 
         ab = getTestAddressBook();
         storage = getTempStorage();
         storage.save(ab);
 
-        assertStorageFilesEqual(storage, getStorage("ValidDataWithNewPassword.txt"));
-        assertStorageFilesEqual(storage, getStorage("ValidDataWithNewPassword.txt", "ValidExamData.txt",
-                "ValidStatisticsData.txt"));
+        assertStorageFilesEqual(getStorage("ValidDataWithNewPassword.txt"), storage);
+        assertStorageFilesEqual(getStorage("ValidDataWithNewPassword.txt", "ValidExamData.txt",
+                "ValidStatisticsData.txt"), storage);
 
         ab = getTestAddressBook(true, true);
         storage = getTempStorage();
         storage.save(ab);
-        assertStorageFilesEqual(storage, getStorage("ValidDataWithAccount.txt"));
+        assertStorageFilesEqual(getStorage("ValidDataWithAccount.txt"), storage);
     }
 
     @Test
@@ -237,8 +237,8 @@ public class StorageFileTest {
         StorageFile storage = getTempStorage();
         storage.saveExam(eb);
         storage.save(ab);
-        assertExamsFilesEqual(storage, getStorage("ValidData.txt", "ValidExamData.txt",
-                "ValidStatisticsData.txt"));
+        assertExamsFilesEqual(getStorage("ValidData.txt", "ValidExamData.txt",
+                "ValidStatisticsData.txt"), storage);
     }
 
     @Test
