@@ -93,6 +93,7 @@ public class CommandAssertions {
     /**
      * Executes the command and confirms that the result messages are correct.
      * Both the 'address book' and the 'last shown list' are expected to be empty.
+     * @param messageType specify which console the given message is supposed to be written to
      * @see #assertCommandBehavior(String, String, AddressBook, boolean, List)
      * @see #assertCommandBehavior(String, String, String, AddressBook, boolean, List)
      */
@@ -129,7 +130,7 @@ public class CommandAssertions {
     /**
      * Executes the command and confirms that the result messages are correct and
      * Assumes the command does not write to file
-     * MessageType specify which console the message is supposed to be written to
+     * @param messageType specify which console the given message is supposed to be written to
      * @see #assertCommandBehavior(String, String, AddressBook, boolean, List, boolean)
      */
     public static void assertCommandBehavior(String inputCommand,
