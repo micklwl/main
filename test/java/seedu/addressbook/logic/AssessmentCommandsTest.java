@@ -32,7 +32,7 @@ public class AssessmentCommandsTest {
      */
     @Rule
     public TemporaryFolder saveFolder = new TemporaryFolder();
-   // private Logic logic;
+    // private Logic logic;
     private AddressBook addressBook;
     private StatisticsBook statisticBook;
     //private Logic logic; Temporary left as local variable
