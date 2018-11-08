@@ -158,7 +158,7 @@ public class StorageFileTest {
             final AddressBook expected = inputToExpected.getSecond();
 
             // ensure loaded AddressBook is properly constructed with test data
-            assertEquals(expected, actual);
+            assertEquals(actual, expected);
             assertEquals(actual.getMasterPassword(), expected.getMasterPassword());
         }
     }
@@ -168,7 +168,7 @@ public class StorageFileTest {
         AddressBook expected = getTestAddressBook();
 
         // ensure loaded AddressBook is properly constructed with test data
-        assert(actual.equals(expected));
+        assertEquals(actual, expected);
         assertEquals(actual.getAllPersons(), expected.getAllPersons());
         assertTrue(actual.isPermAdmin());
     }
@@ -180,7 +180,7 @@ public class StorageFileTest {
         ExamBook expected = getTestExamBook();
 
         // ensure loaded AddressBook is properly constructed with test data
-        assertEquals(expected, actual);
+        assertEquals(actual, expected);
     }
 
     @Test
@@ -214,20 +214,20 @@ public class StorageFileTest {
         storage.save(ab);
         storage.saveStatistics(sb);
         // Checks that the password and isPerm is saved as a new field
-        assertStorageFilesEqual(getStorage("ValidDataWithDefaultPassword.txt"), storage);
+        assertStorageFilesEqual(storage, getStorage("ValidDataWithDefaultPassword.txt"));
 
         ab = getTestAddressBook();
         storage = getTempStorage();
         storage.save(ab);
 
-        assertStorageFilesEqual(getStorage("ValidDataWithNewPassword.txt"), storage);
-        assertStorageFilesEqual(getStorage("ValidDataWithNewPassword.txt", "ValidExamData.txt",
-                "ValidStatisticsData.txt"), storage);
+        assertStorageFilesEqual(storage, getStorage("ValidDataWithNewPassword.txt"));
+        assertStorageFilesEqual(storage, getStorage("ValidDataWithNewPassword.txt", "ValidExamData.txt",
+                "ValidStatisticsData.txt"));
 
         ab = getTestAddressBook(true, true);
         storage = getTempStorage();
         storage.save(ab);
-        assertStorageFilesEqual(getStorage("ValidDataWithAccount.txt"), storage);
+        assertStorageFilesEqual(storage, getStorage("ValidDataWithAccount.txt"));
     }
 
     @Test
@@ -237,8 +237,8 @@ public class StorageFileTest {
         StorageFile storage = getTempStorage();
         storage.saveExam(eb);
         storage.save(ab);
-        assertExamsFilesEqual(getStorage("ValidData.txt", "ValidExamData.txt",
-                "ValidStatisticsData.txt"), storage);
+        assertExamsFilesEqual(storage, getStorage("ValidData.txt", "ValidExamData.txt",
+                "ValidStatisticsData.txt"));
     }
 
     @Test
@@ -331,10 +331,10 @@ public class StorageFileTest {
         }
         ab.addPerson(john);
         ab.addPerson(new Person(new Name("Betsy Crowe"),
-                                new Phone("1234567", true),
-                                new Email("betsycrowe@gmail.com", false),
-                                new Address("Newgate Prison", true),
-                                new HashSet<>(Arrays.asList(new Tag("friend"), new Tag("criminal")))));
+                new Phone("1234567", true),
+                new Email("betsycrowe@gmail.com", false),
+                new Address("Newgate Prison", true),
+                new HashSet<>(Arrays.asList(new Tag("friend"), new Tag("criminal")))));
         if (!isUsingDefaultPassword) {
             ab.setMasterPassword("newPassword");
         }
