@@ -126,7 +126,7 @@ public class LogicTest {
     }
 
     @Test
-    public void execute_invalid() throws Exception {
+    public void execute_invalidString_invalidCommandMessage() throws Exception {
         String invalidCommand = "       ";
         assertCommandBehavior(invalidCommand,
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT, HelpCommand.MESSAGE_USAGE),
@@ -134,7 +134,7 @@ public class LogicTest {
     }
 
     @Test
-    public void execute_unknownCommandWord() throws Exception {
+    public void execute_unknownCommandWord_helpMessage() throws Exception {
         final HelpCommand helpCommand = new HelpCommand();
         helpCommand.setData(addressBook, statisticBook, new ArrayList<>(), privilege);
         String unknownCommand = "uicfhmowqewca";
@@ -143,7 +143,7 @@ public class LogicTest {
 
     // Checks if all void commands is rejected if there is a trailing argument.
     @Test
-    public void execute_voidCommandsInvalidCommandReturned() throws Exception {
+    public void executeVoidCommands_extraArgs_invalidCommandMessage() throws Exception {
         List<Pair<String, Command>> inputToExpectedOutput = List.of(
                 new Pair<>("clear", new ClearCommand()),
                 new Pair<>("list", new ListCommand()),
@@ -197,7 +197,7 @@ public class LogicTest {
     }
 
     @Test
-    public void executeAddInvalidArgsFormat() throws Exception {
+    public void executeAdd_invalidArgsFormat_invalidCommandMessage() throws Exception {
         String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddCommand.MESSAGE_USAGE);
         assertCommandBehavior(
                 "add wrong args wrong args", expectedMessage,
@@ -214,7 +214,7 @@ public class LogicTest {
     }
 
     @Test
-    public void executeAddInvalidPersonData() throws Exception {
+    public void executeAdd_invalidPersonData_invalidMessage() throws Exception {
         assertCommandBehavior(
                 "add []\\[;] p/12345 e/valid@e.mail a/valid, address", Name.MESSAGE_NAME_CONSTRAINTS,
                 CommandAssertions.TargetType.PERSONS);
@@ -236,7 +236,7 @@ public class LogicTest {
     }
 
     @Test
-    public void executeAddSuccessful() throws Exception {
+    public void executeAdd_validData_success() throws Exception {
         // setup expectations
         TestDataHelper helper = new TestDataHelper();
         Person toBeAdded = helper.adam();
@@ -253,7 +253,7 @@ public class LogicTest {
     }
 
     @Test
-    public void executeAddDuplicateNotAllowed() throws Exception {
+    public void executeAdd_duplicateData_duplicateNotAllowed() throws Exception {
         // setup expectations
         TestDataHelper helper = new TestDataHelper();
         Person toBeAdded = helper.adam();
@@ -307,19 +307,19 @@ public class LogicTest {
     }
 
     @Test
-    public void executeViewInvalidArgsFormat() throws Exception {
+    public void executeView_invalidArgsFormat_invalidCommandMessage() throws Exception {
         String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, ViewCommand.MESSAGE_USAGE);
         assertCommandBehavior("view ", expectedMessage, CommandAssertions.TargetType.PERSONS);
         assertCommandBehavior("view arg not number", expectedMessage, CommandAssertions.TargetType.PERSONS);
     }
 
     @Test
-    public void executeViewInvalidIndex() throws Exception {
+    public void executeView_invalidIndex_invalidIndexMessage() throws Exception {
         assertInvalidIndexBehaviorForCommand("view", CommandAssertions.TargetType.PERSONS);
     }
 
     @Test
-    public void executeViewOnlyShowsNonPrivate() throws Exception {
+    public void executeViewOnlyShowsNonPrivate_validArgs_success() throws Exception {
         TestDataHelper helper = new TestDataHelper();
         Person p1 = helper.generatePerson(1, true);
         Person p2 = helper.generatePerson(2, false);
@@ -345,7 +345,7 @@ public class LogicTest {
     }
 
     @Test
-    public void executeTryToViewMissingPersonErrorMessage() throws Exception {
+    public void executeView_missingPerson_personMissingMessage() throws Exception {
         TestDataHelper helper = new TestDataHelper();
         Person p1 = helper.generatePerson(1, false);
         Person p2 = helper.generatePerson(2, false);
@@ -365,14 +365,14 @@ public class LogicTest {
     }
 
     @Test
-    public void executeViewAllInvalidArgsFormat() throws Exception {
+    public void executeViewAll_invalidArgsFormat_invalidCommandMessage() throws Exception {
         String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, ViewAllCommand.MESSAGE_USAGE);
         assertCommandBehavior("viewall ", expectedMessage, CommandAssertions.TargetType.PERSONS);
         assertCommandBehavior("viewall arg not number", expectedMessage, CommandAssertions.TargetType.PERSONS);
     }
 
     @Test
-    public void executeViewAllInvalidIndex() throws Exception {
+    public void executeViewAll_invalidIndex_invalidIndexMessage() throws Exception {
         assertInvalidIndexBehaviorForCommand("viewall", CommandAssertions.TargetType.PERSONS);
     }
 
@@ -404,7 +404,7 @@ public class LogicTest {
     }
 
     @Test
-    public void executeTryToViewAllPersonMissingInAddressBookErrorMessage() throws Exception {
+    public void executeViewAll_missingPerson_missingPersonMessage() throws Exception {
         TestDataHelper helper = new TestDataHelper();
         Person p1 = helper.generatePerson(1, false);
         Person p2 = helper.generatePerson(2, false);
@@ -424,14 +424,14 @@ public class LogicTest {
     }
 
     @Test
-    public void executeDeleteInvalidArgsFormat() throws Exception {
+    public void executeDelete_invalidArgsFormat_invalidCommandMessage() throws Exception {
         String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteCommand.MESSAGE_USAGE);
         assertCommandBehavior("delete ", expectedMessage, CommandAssertions.TargetType.PERSONS);
         assertCommandBehavior("delete arg not number", expectedMessage, CommandAssertions.TargetType.PERSONS);
     }
 
     @Test
-    public void executeDeleteInvalidIndex() throws Exception {
+    public void executeDelete_invalidIndex_invalidIndexMessage() throws Exception {
         assertInvalidIndexBehaviorForCommand("delete", CommandAssertions.TargetType.PERSONS);
     }
 
@@ -497,7 +497,7 @@ public class LogicTest {
     }
 
     @Test
-    public void executeFindInvalidArgsFormat() throws Exception {
+    public void executeFind_invalidArgsFormat_invalidCommandMessage() throws Exception {
         String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE);
         assertCommandBehavior("find ", expectedMessage, CommandAssertions.TargetType.PERSONS);
     }
@@ -563,12 +563,12 @@ public class LogicTest {
     }
 
     @Test
-    public void executeViewSelfNotLoggedIn() throws Exception {
+    public void executeViewSelf_notLoggedIn_errorMessage() throws Exception {
         assertCommandBehavior("viewself", Messages.MESSAGE_NOT_LOGGED_IN, CommandAssertions.TargetType.PERSONS);
     }
 
     @Test
-    public void executeViewSelfSuccess() throws Exception {
+    public void executeViewSelf_loggedIn_success() throws Exception {
         TestDataHelper helper = new TestDataHelper();
         AddressBook expected = new AddressBook();
         TestDataHelper.ThreePersons threePersons = helper.generateThreePersons();
@@ -586,7 +586,7 @@ public class LogicTest {
     }
 
     @Test
-    public void executeChangePasswordInvalidArguments() throws Exception {
+    public void executeChangePassword_invalidArgs_invalidCommandMessage() throws Exception {
         final String initialPassword = addressBook.getMasterPassword();
         final String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT,
                 EditPasswordCommand.MESSAGE_USAGE);
@@ -596,7 +596,7 @@ public class LogicTest {
     }
 
     @Test
-    public void executeChangePasswordInvalidArgumentNumber() throws Exception {
+    public void executeChangePassword_invalidNumberOfArgs_invalidNumberMessage() throws Exception {
         final String initialPassword = addressBook.getMasterPassword();
         final String expectedMessage = MESSAGE_WRONG_NUMBER_ARGUMENTS;
         final int requiredArguments = 2;
@@ -613,7 +613,7 @@ public class LogicTest {
     }
 
     @Test
-    public void executeChangePasswordWrongPassword() throws Exception {
+    public void executeChangePassword_wrongPassword_errorMessage() throws Exception {
         final String initialPassword = addressBook.getMasterPassword();
         String expectedMessage = EditPasswordCommand.MESSAGE_WRONG_PASSWORD;
         assertCommandBehavior("editpw wrong_password new_password", expectedMessage,
@@ -626,7 +626,7 @@ public class LogicTest {
     }
 
     @Test
-    public void executeChangePasswordSameAsOldPassword() throws Exception {
+    public void executeChangePassword_sameAsOldPassword_errorMessage() throws Exception {
         String expectedMessage = EditPasswordCommand.MESSAGE_SAME_AS_OLD_PASSWORD;
         assertCommandBehavior("editpw default_pw default_pw", expectedMessage,
                 CommandAssertions.TargetType.PERSONS);
@@ -636,7 +636,7 @@ public class LogicTest {
     }
 
     @Test
-    public void executeChangePasswordSuccess() throws Exception {
+    public void executeChangePassword_validArgs_success() throws Exception {
         final String expectedMessage = EditPasswordCommand.MESSAGE_SUCCESS;
         final String commandFormat = "editpw %s %s";
         String oldPassword = addressBook.getMasterPassword();

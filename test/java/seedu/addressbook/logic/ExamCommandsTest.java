@@ -410,7 +410,7 @@ public class ExamCommandsTest {
     }
 
     @Test
-    public void executeRegisterExam_invalidParsedArgs() throws Exception {
+    public void executeRegisterExam_invalidParsedArgs_invalidCommandMessage() throws Exception {
         String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, RegisterExamCommand.MESSAGE_USAGE);
         assertCommandBehavior("regexam not_a_number 2", expectedMessage,
                 CommandAssertions.TargetType.EXAMS);
@@ -443,6 +443,13 @@ public class ExamCommandsTest {
     }
 
     @Test
+    public void executeRegisterExam_noArgs_invalidCommandMessage() throws Exception {
+        String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, RegisterExamCommand.MESSAGE_USAGE);
+        assertCommandBehavior("regexam", expectedMessage, CommandAssertions.TargetType.EXAMS);
+        assertCommandBehavior("regexam ", expectedMessage, CommandAssertions.TargetType.EXAMS);
+    }
+
+    @Test
     public void executeRegisterExam_invalidNumberOfArgs_invalidNumberMessage() throws Exception {
         String expectedMessage = String.format(MESSAGE_WRONG_NUMBER_ARGUMENTS, 2, 1,
                 RegisterExamCommand.MESSAGE_USAGE);
@@ -451,10 +458,6 @@ public class ExamCommandsTest {
         expectedMessage = String.format(MESSAGE_WRONG_NUMBER_ARGUMENTS, 2, 3,
                 RegisterExamCommand.MESSAGE_USAGE);
         assertCommandBehavior("regexam 1 1 1", expectedMessage, CommandAssertions.TargetType.EXAMS);
-
-        expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, RegisterExamCommand.MESSAGE_USAGE);
-        assertCommandBehavior("regexam", expectedMessage, CommandAssertions.TargetType.EXAMS);
-        assertCommandBehavior("regexam ", expectedMessage, CommandAssertions.TargetType.EXAMS);
     }
 
     @Test
@@ -614,18 +617,21 @@ public class ExamCommandsTest {
     }
 
     @Test
-    public void executeDeregisterExam_invalidNumberOfArgs() throws Exception {
-        String expectedMessage = String.format(MESSAGE_WRONG_NUMBER_ARGUMENTS , 2, 1,
+    public void executeDeregisterExam_noArgs_invalidCommandMessage() throws Exception {
+        String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeregisterExamCommand.MESSAGE_USAGE);
+        assertCommandBehavior("deregexam", expectedMessage, CommandAssertions.TargetType.EXAMS);
+        assertCommandBehavior("deregexam ", expectedMessage, CommandAssertions.TargetType.EXAMS);
+    }
+
+    @Test
+    public void executeDeregisterExam_invalidNumberOfArgs_invalidNumberMessage() throws Exception {
+        String expectedMessage = String.format(MESSAGE_WRONG_NUMBER_ARGUMENTS, 2, 1,
                 DeregisterExamCommand.MESSAGE_USAGE);
         assertCommandBehavior("deregexam 1", expectedMessage, CommandAssertions.TargetType.EXAMS);
 
-        expectedMessage = String.format(MESSAGE_WRONG_NUMBER_ARGUMENTS , 2, 3,
+        expectedMessage = String.format(MESSAGE_WRONG_NUMBER_ARGUMENTS, 2, 3,
                 DeregisterExamCommand.MESSAGE_USAGE);
         assertCommandBehavior("deregexam 1 1 1", expectedMessage, CommandAssertions.TargetType.EXAMS);
-
-        expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeregisterExamCommand.MESSAGE_USAGE);
-        assertCommandBehavior("deregexam", expectedMessage, CommandAssertions.TargetType.EXAMS);
-        assertCommandBehavior("deregexam ", expectedMessage, CommandAssertions.TargetType.EXAMS);
     }
 
     @Test
@@ -730,7 +736,7 @@ public class ExamCommandsTest {
     }
 
     @Test
-    public void executeViewExams_validArgs_hidesPrivateExams() throws Exception {
+    public void executeViewExams_validArgs_hidesPrivateExamsSuccess() throws Exception {
         TestDataHelper helper = new TestDataHelper();
         Exam e2 = helper.generateExam(2, true, 1);
 
@@ -794,15 +800,14 @@ public class ExamCommandsTest {
     }
 
     @Test
-    public void executeTryToViewExams_loggedinStudentWrongTarget_errorMessage() throws Exception {
+    public void executeTryToViewExams_loggedInStudentWrongTarget_errorMessage() throws Exception {
         final TestDataHelper helper = new TestDataHelper();
         Person p1 = helper.generatePerson(1, false, 1, false, 1);
         Person p2 = helper.generatePerson(2, false);
         p1.setAccount(new Account("username", "password", "Basic"));
         List<Person> lastShownList = helper.generatePersonList(p1, p2);
         logic.setLastShownList(lastShownList);
-        addressBook.addPerson(p1);
-        addressBook.addPerson(p2);
+        helper.addToAddressBook(addressBook, lastShownList);
 
         privilege.resetPrivilege();
         privilege.setMyPerson(p1);
@@ -848,7 +853,6 @@ public class ExamCommandsTest {
 
         AddressBook expected = helper.generateAddressBook(lastShownList);
 
-        privilege.resetPrivilege();
         privilege.raiseToTutor();
         privilege.setMyPerson(p2);
 
@@ -917,7 +921,7 @@ public class ExamCommandsTest {
     }
 
     @Test
-    public void executeDelete_validArgs_removesCorrectPersonMissingExamMessage() throws Exception {
+    public void executeDelete_validArgs_missingExamMessage() throws Exception {
         TestDataHelper helper = new TestDataHelper();
         List<Person> lastShownList = setUpThreePersonsStandardExam(helper);
         helper.addToAddressBook(addressBook, lastShownList);
