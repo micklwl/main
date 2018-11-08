@@ -29,7 +29,7 @@ public class CommandAssertions {
     private static StatisticsBook statisticsBook;
 
     /**
-     * Enum used to indicate which object is the command targeting
+     * Enum used to indicate which file is the command targeting to check
      * */
     public enum TargetType {
         PERSONS,
