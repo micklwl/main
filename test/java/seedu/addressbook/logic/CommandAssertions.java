@@ -41,6 +41,7 @@ public class CommandAssertions {
     public static void setData(StorageStub saveFile, AddressBook addressBook, Logic logic) {
         CommandAssertions.saveFile = saveFile;
         CommandAssertions.addressBook = addressBook;
+        CommandAssertions.saveFile.save(addressBook);
         CommandAssertions.logic = logic;
     }
 
@@ -48,7 +49,9 @@ public class CommandAssertions {
                                StatisticsBook statisticsBook) {
         setData(saveFile, addressBook, logic);
         CommandAssertions.examBook = examBook;
+        CommandAssertions.saveFile.saveExam(examBook);
         CommandAssertions.statisticsBook = statisticsBook;
+        CommandAssertions.saveFile.saveStatistics(statisticsBook);
     }
 
     /**

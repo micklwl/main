@@ -56,7 +56,7 @@ public class FeesCommandsTest {
         StorageStub stubFile = new StorageStub(saveFolder.newFile("testStubFile.txt").getPath(),
                 saveFolder.newFile("testStubExamFile.txt").getPath(),
                 saveFolder.newFile("testStubStatisticsFile.txt").getPath());
-;
+
         logic = new Logic(stubFile, addressBook, examBook, statisticBook, privilege);
         CommandAssertions.setData(stubFile, addressBook, logic);
     }

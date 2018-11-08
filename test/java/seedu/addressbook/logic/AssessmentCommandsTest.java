@@ -32,7 +32,7 @@ public class AssessmentCommandsTest {
      */
     @Rule
     public TemporaryFolder saveFolder = new TemporaryFolder();
-    private Logic logic;
+   // private Logic logic;
     private AddressBook addressBook;
     private StatisticsBook statisticBook;
     //private Logic logic; Temporary left as local variable
@@ -51,8 +51,7 @@ public class AssessmentCommandsTest {
         // Privilege restrictions are tested separately under PrivilegeTest.
         Privilege privilege = new Privilege(new AdminUser());
 
-
-        logic = new Logic(stubFile, addressBook, examBook, statisticBook, privilege);
+        Logic logic = new Logic(stubFile, addressBook, examBook, statisticBook, privilege);
         CommandAssertions.setData(stubFile, addressBook, logic, examBook, statisticBook);
     }
 
