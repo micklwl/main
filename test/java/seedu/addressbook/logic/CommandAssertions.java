@@ -13,6 +13,7 @@ import seedu.addressbook.commands.commandresult.MessageType;
 import seedu.addressbook.data.AddressBook;
 import seedu.addressbook.data.ExamBook;
 import seedu.addressbook.data.StatisticsBook;
+import seedu.addressbook.data.person.Exam;
 import seedu.addressbook.data.person.Person;
 import seedu.addressbook.data.person.ReadOnlyExam;
 import seedu.addressbook.data.person.ReadOnlyPerson;
@@ -450,20 +451,28 @@ public class CommandAssertions {
      */
     private static void assertInvalidIndexBehaviour(String[] commands, TargetType targetType) throws Exception {
         TestDataHelper helper = new TestDataHelper();
-        List<Person> lastShownList = helper.generatePersonList(false, true);
+        String errorMessage;
 
-        logic.setLastShownList(lastShownList);
-
-        String errorMessage = "";
         if (targetType.equals(TargetType.PERSONS)) {
-            errorMessage = MESSAGE_INVALID_PERSON_DISPLAYED_INDEX;
-        } else if (targetType.equals(TargetType.EXAMS)) {
-            errorMessage = MESSAGE_INVALID_EXAM_DISPLAYED_INDEX;
-        }
+            List<Person> lastShownList = helper.generatePersonList(false, true);
 
-        for (String command: commands) {
-            assertCommandBehavior(command, errorMessage,
-                    AddressBook.empty(), false, lastShownList);
+            logic.setLastShownList(lastShownList);
+
+            errorMessage = MESSAGE_INVALID_PERSON_DISPLAYED_INDEX;
+            for (String command: commands) {
+                assertCommandBehavior(command, errorMessage,
+                        AddressBook.empty(), false, lastShownList);
+            }
+        } else if (targetType.equals(TargetType.EXAMS)) {
+            List<Exam> lastShownList = helper.generateExamList(false, true);
+
+            logic.setLastShownExamList(lastShownList);
+
+            errorMessage = MESSAGE_INVALID_EXAM_DISPLAYED_INDEX;
+            for (String command: commands) {
+                assertCommandBehavior(command, errorMessage,
+                        ExamBook.empty(), false, lastShownList);
+            }
         }
     }
 }

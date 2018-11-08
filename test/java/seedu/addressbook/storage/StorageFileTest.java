@@ -158,7 +158,7 @@ public class StorageFileTest {
             final AddressBook expected = inputToExpected.getSecond();
 
             // ensure loaded AddressBook is properly constructed with test data
-            assert(actual.equals(expected));
+            assertEquals(expected, actual);
             assertEquals(actual.getMasterPassword(), expected.getMasterPassword());
         }
     }
@@ -180,7 +180,7 @@ public class StorageFileTest {
         ExamBook expected = getTestExamBook();
 
         // ensure loaded AddressBook is properly constructed with test data
-        assert(actual.equals(expected));
+        assertEquals(expected, actual);
     }
 
     @Test
