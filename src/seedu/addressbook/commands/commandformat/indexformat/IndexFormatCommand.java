@@ -11,7 +11,7 @@ import seedu.addressbook.data.person.Person;
 import seedu.addressbook.data.person.ReadOnlyExam;
 import seedu.addressbook.data.person.ReadOnlyPerson;
 import seedu.addressbook.data.person.UniqueExamList.ExamNotFoundException;
-import seedu.addressbook.data.person.UniquePersonList;
+import seedu.addressbook.data.person.UniquePersonList.PersonNotFoundException;
 
 /** The abstract class for commands with the format of KEYWORD ... KEYWORD */
 public abstract class IndexFormatCommand extends Command {
@@ -30,8 +30,9 @@ public abstract class IndexFormatCommand extends Command {
      * Extracts the the target (mutable) person in the last shown list from the given arguments.
      *
      * @throws IndexOutOfBoundsException if the target index is out of bounds of the last viewed listing
+     * @throws PersonNotFoundException if the target person cannot be found in the address book
      */
-    protected Person getTargetPerson() throws IndexOutOfBoundsException, UniquePersonList.PersonNotFoundException {
+    protected Person getTargetPerson() throws IndexOutOfBoundsException, PersonNotFoundException {
         return addressBook.findPerson(getTargetReadOnlyPerson());
     }
 
@@ -50,7 +51,7 @@ public abstract class IndexFormatCommand extends Command {
      * Extracts the target (mutable) exam in the last shown exam list from the given arguments.
      *
      * @throws ExamIndexOutOfBoundsException if the target exam index is out of bounds of the last viewed exam listing
-     * @throws ExamNotFoundException if no such Exam cannot be found in the exam book
+     * @throws ExamNotFoundException if the target exam cannot be found in the exam book
      */
     protected Exam getTargetExam() throws ExamIndexOutOfBoundsException, ExamNotFoundException {
         return examBook.findExam(getTargetReadOnlyExam());
