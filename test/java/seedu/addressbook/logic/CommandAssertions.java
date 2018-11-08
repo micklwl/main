@@ -17,13 +17,13 @@ import seedu.addressbook.data.person.Exam;
 import seedu.addressbook.data.person.Person;
 import seedu.addressbook.data.person.ReadOnlyExam;
 import seedu.addressbook.data.person.ReadOnlyPerson;
-import seedu.addressbook.storage.StorageFile;
+import seedu.addressbook.stubs.StorageStub;
 
 /**
  * This class holds the commonly used assertions of commands.
  * */
 public class CommandAssertions {
-    private static StorageFile saveFile;
+    private static StorageStub saveFile;
     private static AddressBook addressBook;
     private static Logic logic;
     private static ExamBook examBook;
@@ -38,13 +38,13 @@ public class CommandAssertions {
         STATS
     }
 
-    public static void setData(StorageFile saveFile, AddressBook addressBook, Logic logic) {
+    public static void setData(StorageStub saveFile, AddressBook addressBook, Logic logic) {
         CommandAssertions.saveFile = saveFile;
         CommandAssertions.addressBook = addressBook;
         CommandAssertions.logic = logic;
     }
 
-    public static void setData(StorageFile saveFile, AddressBook addressBook, Logic logic, ExamBook examBook,
+    public static void setData(StorageStub saveFile, AddressBook addressBook, Logic logic, ExamBook examBook,
                                StatisticsBook statisticsBook) {
         setData(saveFile, addressBook, logic);
         CommandAssertions.examBook = examBook;
@@ -112,27 +112,8 @@ public class CommandAssertions {
 
     /**
      * Executes the command and confirms that the result messages are correct and
-     * Assumes the command does not write to file
-     * @see #assertCommandBehavior(String, String, AddressBook, boolean, List, boolean)
-     */
-    public static void assertCommandBehavior(String inputCommand,
-                                      String expectedStatusMessage,
-                                      AddressBook expectedAddressBook,
-                                      boolean isRelevantPersonsExpected,
-                                      List<? extends ReadOnlyPerson> lastShownList) throws Exception {
-        assertCommandBehavior(inputCommand,
-                expectedStatusMessage,
-                expectedAddressBook,
-                isRelevantPersonsExpected,
-                lastShownList,
-                false);
-    }
-
-    /**
-     * Executes the command and confirms that the result messages are correct and
-     * Assumes the command does not write to file
      * @param messageType specify which console the given message is supposed to be written to
-     * @see #assertCommandBehavior(String, String, AddressBook, boolean, List, boolean)
+     * @see #assertCommandBehavior(String, String, AddressBook, boolean, List)
      */
     public static void assertCommandBehavior(String inputCommand,
                                              String expectedMessage,
@@ -146,52 +127,29 @@ public class CommandAssertions {
                     "",
                     expectedAddressBook,
                     isRelevantPersonsExpected,
-                    lastShownList,
-                    false);
+                    lastShownList);
         } else if (messageType.equals(MessageType.OUTPUT)) {
             assertCommandBehavior(inputCommand,
                     "",
                     expectedMessage,
                     expectedAddressBook,
                     isRelevantPersonsExpected,
-                    lastShownList,
-                    false);
+                    lastShownList);
         }
-    }
-
-    /**
-     * Executes the command and confirms that the output and status messages is correct and
-     * Assumes the command does not write to file
-     * @see #assertCommandBehavior(String, String, String, AddressBook, boolean, List, boolean)
-     */
-    public static void assertCommandBehavior(String inputCommand,
-                                             String expectedStatusMessage,
-                                             String expectedOutputMessage,
-                                             AddressBook expectedAddressBook,
-                                             boolean isRelevantPersonsExpected,
-                                             List<? extends ReadOnlyPerson> lastShownList) throws Exception {
-        assertCommandBehavior(inputCommand,
-                expectedStatusMessage,
-                expectedOutputMessage,
-                expectedAddressBook,
-                isRelevantPersonsExpected,
-                lastShownList,
-                false);
     }
 
     /**
      * Executes the command and confirms that the result messages are correct and
      * sets the expectedOutputMessage to be empty.
-     * @see #assertCommandBehavior(String, String, String, AddressBook, boolean, List, boolean)
+     * @see #assertCommandBehavior(String, String, String, AddressBook, boolean, List)
      */
     public static void assertCommandBehavior(String inputCommand,
                                       String expectedStatusMessage,
                                       AddressBook expectedAddressBook,
                                       boolean isRelevantPersonsExpected,
-                                      List<? extends ReadOnlyPerson> lastShownList,
-                                      boolean writesToFile) throws Exception {
+                                      List<? extends ReadOnlyPerson> lastShownList) throws Exception {
         assertCommandBehavior(inputCommand, expectedStatusMessage, "", expectedAddressBook,
-                isRelevantPersonsExpected, lastShownList, writesToFile);
+                isRelevantPersonsExpected, lastShownList);
     }
 
     /**
@@ -208,13 +166,7 @@ public class CommandAssertions {
                                              String expectedOutputMessage,
                                              AddressBook expectedAddressBook,
                                              boolean isRelevantPersonsExpected,
-                                             List<? extends ReadOnlyPerson> lastShownList,
-                                             boolean writesToFile) throws Exception {
-        // If we need to test if the command writes to file correctly
-        // Injects the saveFile object to check
-        if (writesToFile) {
-            logic.setStorage(saveFile);
-        }
+                                             List<? extends ReadOnlyPerson> lastShownList) throws Exception {
         //Execute the command
         CommandResult r = logic.execute(inputCommand);
 
@@ -229,42 +181,20 @@ public class CommandAssertions {
         //Confirm the state of data is as expected
         assertEquals(expectedAddressBook, addressBook);
         assertEquals(lastShownList, logic.getLastShownList());
-        if (writesToFile) {
-            assertEquals(addressBook, saveFile.load());
-        }
     }
 
     /**
      * Executes the command and confirms that the result messages are correct and
-     * Assumes the command does not write to file
-     * @see #assertCommandBehavior(String, String, ExamBook, boolean, List, boolean)
+     * sets the expectedOutputMessage to be empty.
+     * @see #assertCommandBehavior(String, String, String, ExamBook, boolean, List)
      */
     public static void assertCommandBehavior(String inputCommand,
                                              String expectedStatusMessage,
                                              ExamBook expectedExamBook,
                                              boolean isRelevantExamsExpected,
                                              List<? extends ReadOnlyExam> lastShownList) throws Exception {
-        assertCommandBehavior(inputCommand,
-                expectedStatusMessage,
-                expectedExamBook,
-                isRelevantExamsExpected,
-                lastShownList,
-                false);
-    }
-
-    /**
-     * Executes the command and confirms that the result messages are correct and
-     * sets the expectedOutputMessage to be empty.
-     * @see #assertCommandBehavior(String, String, String, ExamBook, boolean, List, boolean)
-     */
-    public static void assertCommandBehavior(String inputCommand,
-                                             String expectedStatusMessage,
-                                             ExamBook expectedExamBook,
-                                             boolean isRelevantExamsExpected,
-                                             List<? extends ReadOnlyExam> lastShownList,
-                                             boolean writesToFile) throws Exception {
         assertCommandBehavior(inputCommand, expectedStatusMessage, "", expectedExamBook,
-                isRelevantExamsExpected, lastShownList, writesToFile);
+                isRelevantExamsExpected, lastShownList);
     }
 
     /**
@@ -281,13 +211,7 @@ public class CommandAssertions {
                                              String expectedOutputMessage,
                                              ExamBook expectedExamBook,
                                              boolean isRelevantExamsExpected,
-                                             List<? extends ReadOnlyExam> lastShownList,
-                                             boolean writesToFile) throws Exception {
-        // If we need to test if the command writes to file correctly
-        // Injects the saveFile object to check
-        if (writesToFile) {
-            logic.setStorage(saveFile);
-        }
+                                             List<? extends ReadOnlyExam> lastShownList) throws Exception {
         //Execute the command
         CommandResult r = logic.execute(inputCommand);
 
@@ -301,9 +225,6 @@ public class CommandAssertions {
         //Confirm the state of data is as expected
         assertEquals(expectedExamBook, examBook);
         assertEquals(lastShownList, logic.getLastShownExamList());
-        if (writesToFile) {
-            assertEquals(examBook, saveFile.loadExam());
-        }
     }
 
     /**
@@ -317,12 +238,7 @@ public class CommandAssertions {
     public static void assertCommandBehavior(String inputCommand,
                                              String expectedStatusMessage,
                                              StatisticsBook expectedStatisticsBook,
-                                             boolean writesToFile) throws Exception {
-        // If we need to test if the command writes to file correctly
-        // Injects the saveFile object to check
-        if (writesToFile) {
-            logic.setStorage(saveFile);
-        }
+                                             boolean isRelevantStatsticsExpected) throws Exception {
         //Execute the command
         CommandResult r = logic.execute(inputCommand);
 
@@ -331,15 +247,12 @@ public class CommandAssertions {
 
         //Confirm the state of data is as expected
         assertEquals(expectedStatisticsBook, statisticsBook);
-        if (writesToFile) {
-            assertEquals(statisticsBook, saveFile.loadStatistics());
-        }
     }
 
     /**
      * Executes the command and confirms that the result messages are correct and
      * Assumes the command writes to file and the expectedOutputMessage to be empty
-     * @see #assertCommandBehavior(String, String, String, AddressBook, ExamBook, boolean, boolean, List, List, boolean)
+     * @see #assertCommandBehavior(String, String, String, AddressBook, ExamBook, boolean, boolean, List, List)
      */
     public static void assertCommandBehavior(String inputCommand,
                                              String expectedStatusMessage,
@@ -357,8 +270,7 @@ public class CommandAssertions {
                 isRelevantPersonsExpected,
                 isRelevantExamsExpected,
                 lastShownList,
-                lastShownExamList,
-                true);
+                lastShownExamList);
     }
 
     /**
@@ -381,13 +293,7 @@ public class CommandAssertions {
                                              boolean isRelevantPersonsExpected,
                                              boolean isRelevantExamsExpected,
                                              List<? extends ReadOnlyPerson> lastShownList,
-                                             List<? extends ReadOnlyExam> lastShownExamList,
-                                             boolean writesToFile) throws Exception {
-        // If we need to test if the command writes to file correctly
-        // Injects the saveFile object to check
-        if (writesToFile) {
-            logic.setStorage(saveFile);
-        }
+                                             List<? extends ReadOnlyExam> lastShownExamList) throws Exception {
         //Execute the command
         CommandResult r = logic.execute(inputCommand);
         //Confirm the result contains the right data
@@ -405,10 +311,6 @@ public class CommandAssertions {
         //Confirm the state of data is as expected
         assertEquals(expectedExamBook, examBook);
         assertEquals(expectedAddressBook, addressBook);
-        if (writesToFile) {
-            assertEquals(addressBook, saveFile.load());
-            assertEquals(examBook, saveFile.loadExam());
-        }
     }
 
     /**

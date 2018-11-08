@@ -4,6 +4,7 @@ import static junit.framework.TestCase.assertEquals;
 import static seedu.addressbook.common.Messages.MESSAGE_DATE_CONSTRAINTS;
 import static seedu.addressbook.common.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.addressbook.common.Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX;
+import static seedu.addressbook.logic.CommandAssertions.TargetType;
 import static seedu.addressbook.logic.CommandAssertions.assertCommandBehavior;
 
 import java.text.SimpleDateFormat;
@@ -26,7 +27,6 @@ import seedu.addressbook.data.StatisticsBook;
 import seedu.addressbook.data.person.Person;
 import seedu.addressbook.privilege.Privilege;
 import seedu.addressbook.privilege.user.AdminUser;
-import seedu.addressbook.storage.StorageFile;
 import seedu.addressbook.stubs.StorageStub;
 
 
@@ -46,7 +46,6 @@ public class AttendanceTest {
     @Before
     public void setUp() throws Exception {
         StorageStub stubFile;
-        StorageFile saveFile;
 
         addressBook = new AddressBook();
         ExamBook examBook = new ExamBook();
@@ -55,15 +54,12 @@ public class AttendanceTest {
         // Privilege restrictions are tested separately under PrivilegeTest.
         Privilege privilege = new Privilege(new AdminUser());
 
-        saveFile = new StorageFile(saveFolder.newFile("testSaveFile.txt").getPath(),
-                saveFolder.newFile("testExamFile.txt").getPath(),
-                saveFolder.newFile("testStatisticsFile.txt").getPath());
         stubFile = new StorageStub(saveFolder.newFile("testStubFile.txt").getPath(),
                 saveFolder.newFile("testStubExamFile.txt").getPath(),
                 saveFolder.newFile("testStubStatisticsFile.txt").getPath());
-        saveFile.save(addressBook);
+
         logic = new Logic(stubFile, addressBook, examBook, statisticBook, privilege);
-        CommandAssertions.setData(saveFile, addressBook, logic);
+        CommandAssertions.setData(stubFile, addressBook, logic);
     }
 
     /** This file contains the following test:
@@ -103,8 +99,8 @@ public class AttendanceTest {
     @Test
     public void executeUpdateAttendanceInvalidArgsFormat() throws Exception {
         String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, UpdateAttendanceCommand.MESSAGE_USAGE);
-        assertCommandBehavior("attendance 1 d/29-09-1996 att/ ", expectedMessage, CommandAssertions.TargetType.PERSONS);
-        assertCommandBehavior("attendance 2", expectedMessage, CommandAssertions.TargetType.PERSONS);
+        assertCommandBehavior("attendance 1 d/29-09-1996 att/ ", expectedMessage, TargetType.PERSONS);
+        assertCommandBehavior("attendance 2", expectedMessage, TargetType.PERSONS);
     }
 
     @Test
@@ -240,7 +236,7 @@ public class AttendanceTest {
     public void executeViewAttendancePersonInvalidArgsFormat() throws Exception {
         String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT,
                 ViewAttendancePersonCommand.MESSAGE_USAGE);
-        assertCommandBehavior("viewAttenPerson ", expectedMessage, CommandAssertions.TargetType.PERSONS);
+        assertCommandBehavior("viewAttenPerson ", expectedMessage, TargetType.PERSONS);
     }
 
     @Test
@@ -311,7 +307,7 @@ public class AttendanceTest {
     public void executeReplaceAttendanceInvalidArgsFormat() throws Exception {
         String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, ReplaceAttendanceCommand.MESSAGE_USAGE);
         assertCommandBehavior("replaceAtten 1 d/29-09-1996 att/ ", expectedMessage,
-                CommandAssertions.TargetType.PERSONS);
+                TargetType.PERSONS);
     }
 
     @Test
@@ -439,8 +435,8 @@ public class AttendanceTest {
     @Test
     public void executeViewAttendanceDateInvalidArgsFormat() throws Exception {
         String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, ViewAttendanceDateCommand.MESSAGE_USAGE);
-        assertCommandBehavior("viewAttenDate ", expectedMessage, CommandAssertions.TargetType.PERSONS);
-        assertCommandBehavior("viewAttenDate d/", expectedMessage, CommandAssertions.TargetType.PERSONS);
+        assertCommandBehavior("viewAttenDate ", expectedMessage, TargetType.PERSONS);
+        assertCommandBehavior("viewAttenDate d/", expectedMessage, TargetType.PERSONS);
     }
 
     @Test

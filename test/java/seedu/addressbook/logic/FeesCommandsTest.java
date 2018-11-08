@@ -2,6 +2,7 @@ package seedu.addressbook.logic;
 
 import static seedu.addressbook.common.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.addressbook.common.Messages.MESSAGE_PERSON_NOT_IN_ADDRESSBOOK;
+import static seedu.addressbook.logic.CommandAssertions.TargetType;
 import static seedu.addressbook.logic.CommandAssertions.assertCommandBehavior;
 import static seedu.addressbook.logic.CommandAssertions.assertInvalidIndexBehaviorForCommand;
 
@@ -27,7 +28,6 @@ import seedu.addressbook.data.person.ReadOnlyPerson;
 import seedu.addressbook.data.tag.Tag;
 import seedu.addressbook.privilege.Privilege;
 import seedu.addressbook.privilege.user.AdminUser;
-import seedu.addressbook.storage.StorageFile;
 import seedu.addressbook.stubs.StorageStub;
 
 /**
@@ -52,21 +52,19 @@ public class FeesCommandsTest {
         // Privilege restrictions are tested separately under PrivilegeTest.
         Privilege privilege = new Privilege(new AdminUser());
 
-        StorageFile saveFile = new StorageFile(saveFolder.newFile("testSaveFile.txt").getPath(),
-                saveFolder.newFile("testExamFile.txt").getPath(),
-                saveFolder.newFile("testStatisticsFile.txt").getPath());
+
         StorageStub stubFile = new StorageStub(saveFolder.newFile("testStubFile.txt").getPath(),
                 saveFolder.newFile("testStubExamFile.txt").getPath(),
                 saveFolder.newFile("testStubStatisticsFile.txt").getPath());
-        saveFile.save(addressBook);
+;
         logic = new Logic(stubFile, addressBook, examBook, statisticBook, privilege);
-        CommandAssertions.setData(saveFile, addressBook, logic);
+        CommandAssertions.setData(stubFile, addressBook, logic);
     }
 
     @Test
     public void executeAddFeesCommandInvalidData() throws Exception {
         assertCommandBehavior(
-                "editfees 2 1.111 01-01-2018", Fees.MESSAGE_FEES_CONSTRAINTS, CommandAssertions.TargetType.PERSONS);
+                "editfees 2 1.111 01-01-2018", Fees.MESSAGE_FEES_CONSTRAINTS, TargetType.PERSONS);
     }
 
     @Test
@@ -249,19 +247,18 @@ public class FeesCommandsTest {
                 String.format(ViewFeesCommand.MESSAGE_VIEWFEE_PERSON_SUCCESS, p2.getAsTextShowFee()),
                 expected,
                 false,
-                threePersons,
-                false);
+                threePersons);
     }
 
     @Test
     public void executeViewFeesCommandInvalidIndex() throws Exception {
-        assertInvalidIndexBehaviorForCommand("viewfees", CommandAssertions.TargetType.PERSONS);
+        assertInvalidIndexBehaviorForCommand("viewfees", TargetType.PERSONS);
     }
 
     @Test
     public void executeViewFeesInvalidArgsFormat() throws Exception {
         String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, ViewFeesCommand.MESSAGE_USAGE);
-        assertCommandBehavior("viewfees ", expectedMessage, CommandAssertions.TargetType.PERSONS);
-        assertCommandBehavior("viewfees arg not number", expectedMessage, CommandAssertions.TargetType.PERSONS);
+        assertCommandBehavior("viewfees ", expectedMessage, TargetType.PERSONS);
+        assertCommandBehavior("viewfees arg not number", expectedMessage, TargetType.PERSONS);
     }
 }

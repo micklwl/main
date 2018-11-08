@@ -7,6 +7,7 @@ import static seedu.addressbook.common.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.addressbook.common.Messages.MESSAGE_NOT_LOGGED_IN;
 import static seedu.addressbook.common.Messages.MESSAGE_PERSON_NOT_IN_ADDRESSBOOK;
 import static seedu.addressbook.common.Messages.MESSAGE_WRONG_NUMBER_ARGUMENTS;
+import static seedu.addressbook.logic.CommandAssertions.TargetType;
 import static seedu.addressbook.logic.CommandAssertions.assertCommandBehavior;
 import static seedu.addressbook.logic.CommandAssertions.assertInvalidIndexBehaviorForCommand;
 import static seedu.addressbook.privilege.Privilege.PRIVILEGE_CONSTRAINTS;
@@ -38,7 +39,6 @@ import seedu.addressbook.privilege.user.AdminUser;
 import seedu.addressbook.privilege.user.BasicUser;
 import seedu.addressbook.privilege.user.TutorUser;
 import seedu.addressbook.privilege.user.User.PrivilegeLevel;
-import seedu.addressbook.storage.StorageFile;
 import seedu.addressbook.stubs.StorageStub;
 
 public class AccountTest {
@@ -56,19 +56,16 @@ public class AccountTest {
     @Before
     public void setUp() throws Exception {
         StorageStub stubFile;
-        StorageFile saveFile;
         ExamBook examBook = new ExamBook();
         StatisticsBook statisticsBook = new StatisticsBook();
-        saveFile = new StorageFile(saveFolder.newFile("testSaveFile.txt").getPath(),
-                saveFolder.newFile("testExamFile.txt").getPath(),
-                saveFolder.newFile("testStatisticsFile.txt").getPath());
+
         stubFile = new StorageStub(saveFolder.newFile("testStubFile.txt").getPath(),
                 saveFolder.newFile("testStubExamFile.txt").getPath(),
                 saveFolder.newFile("testStubStatisticsFile.txt").getPath());
-        saveFile.save(addressBook);
+
         privilege = new Privilege(new AdminUser());
         logic = new Logic(stubFile, addressBook, examBook, statisticsBook, privilege);
-        CommandAssertions.setData(saveFile, addressBook, logic);
+        CommandAssertions.setData(stubFile, addressBook, logic);
     }
 
     private void setUpThreePerson(AddressBook addressBook,
@@ -85,7 +82,7 @@ public class AccountTest {
     public void executeAddAccountInvalidArgument() throws Exception {
         assertCommandBehavior("addacc",
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddAccountCommand.MESSAGE_USAGE),
-                CommandAssertions.TargetType.PERSONS);
+                TargetType.PERSONS);
     }
 
     @Test
@@ -98,14 +95,14 @@ public class AccountTest {
         for (String input : inputs) {
             assertCommandBehavior(input,
                     String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddAccountCommand.MESSAGE_USAGE),
-                    CommandAssertions.TargetType.PERSONS);
+                    TargetType.PERSONS);
         }
     }
 
     @Test
     public void executeAddAccountInvalidIndex() throws Exception {
         assertInvalidIndexBehaviorForCommand("addacc", "", "username password BASIC",
-                CommandAssertions.TargetType.PERSONS);
+                TargetType.PERSONS);
     }
 
     @Test
@@ -234,13 +231,13 @@ public class AccountTest {
     @Test
     public void executeDeleteAccountInvalidArgsFormat() throws Exception {
         String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteAccountCommand.MESSAGE_USAGE);
-        assertCommandBehavior("delacc ", expectedMessage, CommandAssertions.TargetType.PERSONS);
-        assertCommandBehavior("delacc arg not number", expectedMessage, CommandAssertions.TargetType.PERSONS);
+        assertCommandBehavior("delacc ", expectedMessage, TargetType.PERSONS);
+        assertCommandBehavior("delacc arg not number", expectedMessage, TargetType.PERSONS);
     }
 
     @Test
     public void executeDeleteAccountInvalidIndex() throws Exception {
-        assertInvalidIndexBehaviorForCommand("delacc", CommandAssertions.TargetType.PERSONS);
+        assertInvalidIndexBehaviorForCommand("delacc", TargetType.PERSONS);
     }
 
     @Test
@@ -260,8 +257,7 @@ public class AccountTest {
                 String.format(DeleteAccountCommand.MESSAGE_DELETE_ACCOUNT_PERSON_SUCCESS, p2.getName()),
                 expected,
                 true,
-                threePersons.getExpected(),
-                true);
+                threePersons.getExpected());
     }
 
     @Test
@@ -522,12 +518,12 @@ public class AccountTest {
     @Test
     public void executeLogoutNotLoggedIn() throws Exception {
         privilege.resetPrivilege();
-        assertCommandBehavior("logout", MESSAGE_NOT_LOGGED_IN, CommandAssertions.TargetType.PERSONS);
+        assertCommandBehavior("logout", MESSAGE_NOT_LOGGED_IN, TargetType.PERSONS);
     }
 
     @Test
     public void executeLogoutSuccess() throws Exception {
-        assertCommandBehavior("logout", LogoutCommand.MESSAGE_SUCCESS, CommandAssertions.TargetType.PERSONS);
+        assertCommandBehavior("logout", LogoutCommand.MESSAGE_SUCCESS, TargetType.PERSONS);
         assertTrue(privilege.isBase());
     }
 
@@ -547,7 +543,6 @@ public class AccountTest {
                 ClearCommand.MESSAGE_DELETING_SELF,
                 expected,
                 false,
-                threePersons.getExpected(),
-                true);
+                threePersons.getExpected());
     }
 }

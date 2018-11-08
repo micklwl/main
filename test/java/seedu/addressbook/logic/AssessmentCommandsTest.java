@@ -20,7 +20,6 @@ import seedu.addressbook.data.person.AssignmentStatistics;
 import seedu.addressbook.data.person.ReadOnlyPerson;
 import seedu.addressbook.privilege.Privilege;
 import seedu.addressbook.privilege.user.AdminUser;
-import seedu.addressbook.storage.StorageFile;
 import seedu.addressbook.stubs.StorageStub;
 
 /**
@@ -33,16 +32,14 @@ public class AssessmentCommandsTest {
      */
     @Rule
     public TemporaryFolder saveFolder = new TemporaryFolder();
-
+    private Logic logic;
     private AddressBook addressBook;
     private StatisticsBook statisticBook;
     //private Logic logic; Temporary left as local variable
 
     @Before
     public void setUp() throws Exception {
-        StorageFile saveFile = new StorageFile(saveFolder.newFile("testSaveFile.txt").getPath(),
-                saveFolder.newFile("testExamFile.txt").getPath(),
-                saveFolder.newFile("testStatisticsFile.txt").getPath());
+
         StorageStub stubFile = new StorageStub(saveFolder.newFile("testStubFile.txt").getPath(),
                 saveFolder.newFile("testStubExamFile.txt").getPath(),
                 saveFolder.newFile("testStubStatisticsFile.txt").getPath());
@@ -54,10 +51,9 @@ public class AssessmentCommandsTest {
         // Privilege restrictions are tested separately under PrivilegeTest.
         Privilege privilege = new Privilege(new AdminUser());
 
-        saveFile.save(addressBook);
-        saveFile.saveStatistics(statisticBook);
-        Logic logic = new Logic(stubFile, addressBook, examBook, statisticBook, privilege);
-        CommandAssertions.setData(saveFile, addressBook, logic, examBook, statisticBook);
+
+        logic = new Logic(stubFile, addressBook, examBook, statisticBook, privilege);
+        CommandAssertions.setData(stubFile, addressBook, logic, examBook, statisticBook);
     }
 
 

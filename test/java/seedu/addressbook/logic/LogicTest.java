@@ -5,6 +5,7 @@ import static seedu.addressbook.common.Messages.MESSAGE_COMMAND_NOT_FOUND;
 import static seedu.addressbook.common.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.addressbook.common.Messages.MESSAGE_PERSON_NOT_IN_ADDRESSBOOK;
 import static seedu.addressbook.common.Messages.MESSAGE_WRONG_NUMBER_ARGUMENTS;
+import static seedu.addressbook.logic.CommandAssertions.TargetType;
 import static seedu.addressbook.logic.CommandAssertions.assertCommandBehavior;
 import static seedu.addressbook.logic.CommandAssertions.assertInvalidIndexBehaviorForCommand;
 
@@ -48,7 +49,6 @@ import seedu.addressbook.data.person.details.Phone;
 import seedu.addressbook.data.tag.Tag;
 import seedu.addressbook.privilege.Privilege;
 import seedu.addressbook.privilege.user.AdminUser;
-import seedu.addressbook.storage.StorageFile;
 import seedu.addressbook.stubs.StorageStub;
 
 public class LogicTest {
@@ -66,9 +66,6 @@ public class LogicTest {
 
     @Before
     public void setUp() throws Exception {
-        StorageFile saveFile = new StorageFile(saveFolder.newFile("testSaveFile.txt").getPath(),
-                saveFolder.newFile("testExamFile.txt").getPath(),
-                saveFolder.newFile("testStatisticsFile.txt").getPath());
         StorageStub stubFile = new StorageStub(saveFolder.newFile("testStubFile.txt").getPath(),
                 saveFolder.newFile("testStubExamFile.txt").getPath(),
                 saveFolder.newFile("testStubStatisticsFile.txt").getPath());
@@ -80,11 +77,8 @@ public class LogicTest {
         // Privilege restrictions are tested separately under PrivilegeTest.
         privilege = new Privilege(new AdminUser());
 
-        saveFile.save(addressBook);
-        saveFile.saveExam(examBook);
-        saveFile.saveStatistics(statisticBook);
         logic = new Logic(stubFile, addressBook, examBook, statisticBook, privilege);
-        CommandAssertions.setData(saveFile, addressBook, logic, examBook, statisticBook);
+        CommandAssertions.setData(stubFile, addressBook, logic, examBook, statisticBook);
     }
 
     private void setUpThreePerson(AddressBook addressBook,
@@ -130,7 +124,7 @@ public class LogicTest {
         String invalidCommand = "       ";
         assertCommandBehavior(invalidCommand,
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT, HelpCommand.MESSAGE_USAGE),
-                CommandAssertions.TargetType.PERSONS);
+                TargetType.PERSONS);
     }
 
     @Test
@@ -156,7 +150,7 @@ public class LogicTest {
         for (Pair<String, Command> inputToOutput: inputToExpectedOutput) {
             assertCommandBehavior(inputToOutput.getFirst() + " garbage",
                     String.format(MESSAGE_INVALID_COMMAND_FORMAT, inputToOutput.getSecond().getCommandUsageMessage()),
-                    CommandAssertions.TargetType.PERSONS);
+                    TargetType.PERSONS);
         }
     }
 
@@ -175,7 +169,7 @@ public class LogicTest {
 
     @Test
     public void executeExit() throws Exception {
-        assertCommandBehavior("exit", ExitCommand.MESSAGE_EXIT_ACKNOWLEDGEMENT, CommandAssertions.TargetType.PERSONS);
+        assertCommandBehavior("exit", ExitCommand.MESSAGE_EXIT_ACKNOWLEDGEMENT, TargetType.PERSONS);
     }
 
     @Test
@@ -192,8 +186,7 @@ public class LogicTest {
                 ClearCommand.MESSAGE_SUCCESS,
                 AddressBook.empty(),
                 true,
-                Collections.emptyList(),
-                true);
+                Collections.emptyList());
     }
 
     @Test
@@ -201,38 +194,38 @@ public class LogicTest {
         String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddCommand.MESSAGE_USAGE);
         assertCommandBehavior(
                 "add wrong args wrong args", expectedMessage,
-                CommandAssertions.TargetType.PERSONS);
+                TargetType.PERSONS);
         assertCommandBehavior(
                 "add Valid Name 12345 e/valid@email.butNoPhonePrefix a/valid, address", expectedMessage,
-                CommandAssertions.TargetType.PERSONS);
+                TargetType.PERSONS);
         assertCommandBehavior(
                 "add Valid Name p/12345 valid@email.butNoPrefix a/valid, address", expectedMessage,
-                CommandAssertions.TargetType.PERSONS);
+               TargetType.PERSONS);
         assertCommandBehavior(
                 "add Valid Name p/12345 e/valid@email.butNoAddressPrefix valid, address", expectedMessage,
-                CommandAssertions.TargetType.PERSONS);
+                TargetType.PERSONS);
     }
 
     @Test
     public void executeAdd_invalidPersonData_invalidMessage() throws Exception {
         assertCommandBehavior(
                 "add []\\[;] p/12345 e/valid@e.mail a/valid, address", Name.MESSAGE_NAME_CONSTRAINTS,
-                CommandAssertions.TargetType.PERSONS);
+                TargetType.PERSONS);
         assertCommandBehavior(
                 "add Valid Name p/not_numbers e/valid@e.mail a/valid, address", Phone.MESSAGE_PHONE_CONSTRAINTS,
-                CommandAssertions.TargetType.PERSONS);
+                TargetType.PERSONS);
         assertCommandBehavior(
                 "add Valid Name p/12345 e/notAnEmail a/valid, address", Email.MESSAGE_EMAIL_CONSTRAINTS,
-                CommandAssertions.TargetType.PERSONS);
+                TargetType.PERSONS);
         assertCommandBehavior(
                 "add Valid Name p/12345 e/valid@e.mail a/valid, address t/invalid_-[.tag", Tag.MESSAGE_TAG_CONSTRAINTS,
-                CommandAssertions.TargetType.PERSONS);
+                TargetType.PERSONS);
         assertCommandBehavior(
                 "add Valid Name p/12345 e/valid@e.mail a/#$%#@#What Am I?", Address.MESSAGE_ADDRESS_CONSTRAINTS,
-                CommandAssertions.TargetType.PERSONS);
+                TargetType.PERSONS);
         assertCommandBehavior(
                 "add Valid Name p/1234 e/valid@e.mail a/valid, address t/invalid_-[.tag", Tag.MESSAGE_TAG_CONSTRAINTS,
-                CommandAssertions.TargetType.PERSONS);
+                TargetType.PERSONS);
     }
 
     @Test
@@ -248,8 +241,7 @@ public class LogicTest {
                 String.format(AddCommand.MESSAGE_SUCCESS, toBeAdded),
                 expected,
                 true,
-                List.of(toBeAdded),
-                true);
+                List.of(toBeAdded));
     }
 
     @Test
@@ -309,13 +301,13 @@ public class LogicTest {
     @Test
     public void executeView_invalidArgsFormat_invalidCommandMessage() throws Exception {
         String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, ViewCommand.MESSAGE_USAGE);
-        assertCommandBehavior("view ", expectedMessage, CommandAssertions.TargetType.PERSONS);
-        assertCommandBehavior("view arg not number", expectedMessage, CommandAssertions.TargetType.PERSONS);
+        assertCommandBehavior("view ", expectedMessage, TargetType.PERSONS);
+        assertCommandBehavior("view arg not number", expectedMessage, TargetType.PERSONS);
     }
 
     @Test
     public void executeView_invalidIndex_invalidIndexMessage() throws Exception {
-        assertInvalidIndexBehaviorForCommand("view", CommandAssertions.TargetType.PERSONS);
+        assertInvalidIndexBehaviorForCommand("view", TargetType.PERSONS);
     }
 
     @Test
@@ -367,13 +359,13 @@ public class LogicTest {
     @Test
     public void executeViewAll_invalidArgsFormat_invalidCommandMessage() throws Exception {
         String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, ViewAllCommand.MESSAGE_USAGE);
-        assertCommandBehavior("viewall ", expectedMessage, CommandAssertions.TargetType.PERSONS);
-        assertCommandBehavior("viewall arg not number", expectedMessage, CommandAssertions.TargetType.PERSONS);
+        assertCommandBehavior("viewall ", expectedMessage, TargetType.PERSONS);
+        assertCommandBehavior("viewall arg not number", expectedMessage, TargetType.PERSONS);
     }
 
     @Test
     public void executeViewAll_invalidIndex_invalidIndexMessage() throws Exception {
-        assertInvalidIndexBehaviorForCommand("viewall", CommandAssertions.TargetType.PERSONS);
+        assertInvalidIndexBehaviorForCommand("viewall", TargetType.PERSONS);
     }
 
     @Test
@@ -426,13 +418,13 @@ public class LogicTest {
     @Test
     public void executeDelete_invalidArgsFormat_invalidCommandMessage() throws Exception {
         String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteCommand.MESSAGE_USAGE);
-        assertCommandBehavior("delete ", expectedMessage, CommandAssertions.TargetType.PERSONS);
-        assertCommandBehavior("delete arg not number", expectedMessage, CommandAssertions.TargetType.PERSONS);
+        assertCommandBehavior("delete ", expectedMessage, TargetType.PERSONS);
+        assertCommandBehavior("delete arg not number", expectedMessage, TargetType.PERSONS);
     }
 
     @Test
     public void executeDelete_invalidIndex_invalidIndexMessage() throws Exception {
-        assertInvalidIndexBehaviorForCommand("delete", CommandAssertions.TargetType.PERSONS);
+        assertInvalidIndexBehaviorForCommand("delete", TargetType.PERSONS);
     }
 
     @Test
@@ -451,8 +443,7 @@ public class LogicTest {
                 String.format(DeleteCommand.MESSAGE_DELETE_PERSON_SUCCESS, p2),
                 expected,
                 true,
-                threePersons.getExpected(),
-                true);
+                threePersons.getExpected());
     }
 
     @Test
@@ -469,8 +460,7 @@ public class LogicTest {
                 DeleteCommand.MESSAGE_DELETING_SELF,
                 expected,
                 false,
-                threePersons.getExpected(),
-                true);
+                threePersons.getExpected());
     }
 
     @Test
@@ -499,7 +489,7 @@ public class LogicTest {
     @Test
     public void executeFind_invalidArgsFormat_invalidCommandMessage() throws Exception {
         String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE);
-        assertCommandBehavior("find ", expectedMessage, CommandAssertions.TargetType.PERSONS);
+        assertCommandBehavior("find ", expectedMessage, TargetType.PERSONS);
     }
 
     @Test
@@ -564,7 +554,7 @@ public class LogicTest {
 
     @Test
     public void executeViewSelf_notLoggedIn_errorMessage() throws Exception {
-        assertCommandBehavior("viewself", Messages.MESSAGE_NOT_LOGGED_IN, CommandAssertions.TargetType.PERSONS);
+        assertCommandBehavior("viewself", Messages.MESSAGE_NOT_LOGGED_IN, TargetType.PERSONS);
     }
 
     @Test
@@ -590,8 +580,8 @@ public class LogicTest {
         final String initialPassword = addressBook.getMasterPassword();
         final String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT,
                 EditPasswordCommand.MESSAGE_USAGE);
-        assertCommandBehavior("editpw", expectedMessage, CommandAssertions.TargetType.PERSONS);
-        assertCommandBehavior("editpw ", expectedMessage, CommandAssertions.TargetType.PERSONS);
+        assertCommandBehavior("editpw", expectedMessage, TargetType.PERSONS);
+        assertCommandBehavior("editpw ", expectedMessage, TargetType.PERSONS);
         assertEquals(addressBook.getMasterPassword(), initialPassword);
     }
 
@@ -603,12 +593,12 @@ public class LogicTest {
         int actualArguments = 1;
         assertCommandBehavior("editpw default_pw",
                 String.format(expectedMessage, requiredArguments, actualArguments, EditPasswordCommand.MESSAGE_USAGE),
-                CommandAssertions.TargetType.PERSONS);
+                TargetType.PERSONS);
 
         actualArguments = 3;
         assertCommandBehavior("editpw default_pw new_pw extra_arg",
                 String.format(expectedMessage, requiredArguments, actualArguments,
-                        EditPasswordCommand.MESSAGE_USAGE), CommandAssertions.TargetType.PERSONS);
+                        EditPasswordCommand.MESSAGE_USAGE), TargetType.PERSONS);
         assertEquals(addressBook.getMasterPassword(), initialPassword);
     }
 
@@ -617,11 +607,11 @@ public class LogicTest {
         final String initialPassword = addressBook.getMasterPassword();
         String expectedMessage = EditPasswordCommand.MESSAGE_WRONG_PASSWORD;
         assertCommandBehavior("editpw wrong_password new_password", expectedMessage,
-                CommandAssertions.TargetType.PERSONS);
+                TargetType.PERSONS);
         assertCommandBehavior("editpw default_password1 new_password", expectedMessage,
-                CommandAssertions.TargetType.PERSONS);
+                TargetType.PERSONS);
         assertCommandBehavior("editpw Default_password new_password", expectedMessage,
-                CommandAssertions.TargetType.PERSONS);
+                TargetType.PERSONS);
         assertEquals(addressBook.getMasterPassword(), initialPassword);
     }
 
@@ -629,10 +619,10 @@ public class LogicTest {
     public void executeChangePassword_sameAsOldPassword_errorMessage() throws Exception {
         String expectedMessage = EditPasswordCommand.MESSAGE_SAME_AS_OLD_PASSWORD;
         assertCommandBehavior("editpw default_pw default_pw", expectedMessage,
-                CommandAssertions.TargetType.PERSONS);
+                TargetType.PERSONS);
         addressBook.setMasterPassword("new_password");
         assertCommandBehavior("editpw new_password new_password", expectedMessage,
-                CommandAssertions.TargetType.PERSONS);
+                TargetType.PERSONS);
     }
 
     @Test
@@ -643,14 +633,14 @@ public class LogicTest {
         String newPassword = "new_password";
         String commandInput = String.format(commandFormat, oldPassword, newPassword);
         assertCommandBehavior(commandInput,
-                String.format(expectedMessage, newPassword), CommandAssertions.TargetType.PERSONS);
+                String.format(expectedMessage, newPassword), TargetType.PERSONS);
         assertEquals(addressBook.getMasterPassword(), newPassword);
 
         oldPassword = addressBook.getMasterPassword();
         newPassword = "another_new_password";
         commandInput = String.format(commandFormat, oldPassword, newPassword);
         assertCommandBehavior(commandInput,
-                String.format(expectedMessage, newPassword), CommandAssertions.TargetType.PERSONS);
+                String.format(expectedMessage, newPassword), TargetType.PERSONS);
         assertEquals(addressBook.getMasterPassword(), newPassword);
     }
 }

@@ -39,7 +39,6 @@ import seedu.addressbook.data.person.Person;
 import seedu.addressbook.data.person.ReadOnlyExam;
 import seedu.addressbook.privilege.Privilege;
 import seedu.addressbook.privilege.user.AdminUser;
-import seedu.addressbook.storage.StorageFile;
 import seedu.addressbook.stubs.StorageStub;
 
 /**
@@ -60,10 +59,6 @@ public class ExamCommandsTest {
     @Before
     public void setUp() throws Exception {
         StorageStub stubFile;
-        StorageFile saveFile;
-        saveFile = new StorageFile(saveFolder.newFile("testSaveFile.txt").getPath(),
-                saveFolder.newFile("testExamFile.txt").getPath(),
-                saveFolder.newFile("testStatisticsFile.txt").getPath());
         stubFile = new StorageStub(saveFolder.newFile("testStubFile.txt").getPath(),
                 saveFolder.newFile("testStubExamFile.txt").getPath(),
                 saveFolder.newFile("testStubStatisticsFile.txt").getPath());
@@ -73,10 +68,9 @@ public class ExamCommandsTest {
         StatisticsBook statisticBook = new StatisticsBook();
         privilege = new Privilege(new AdminUser());
 
-        saveFile.save(addressBook);
-        saveFile.saveExam(examBook);
+
         logic = new Logic(stubFile, addressBook, examBook, statisticBook, privilege);
-        CommandAssertions.setData(saveFile, addressBook, logic, examBook, statisticBook);
+        CommandAssertions.setData(stubFile, addressBook, logic, examBook, statisticBook);
     }
 
     @Test
@@ -91,7 +85,7 @@ public class ExamCommandsTest {
         assertCommandBehavior(helper.generateAddExamCommand(toBeAdded),
                 String.format(AddExamCommand.MESSAGE_SUCCESS, toBeAdded),
                 expected, true,
-                expected.getAllExam().immutableListView(), true);
+                expected.getAllExam().immutableListView());
     }
 
     @Test
@@ -109,7 +103,7 @@ public class ExamCommandsTest {
         assertCommandBehavior(
                 helper.generateAddExamCommand(toBeAdded), AddExamCommand.MESSAGE_DUPLICATE_EXAM,
                 expected, false,
-                Collections.emptyList(), false);
+                Collections.emptyList());
     }
 
     @Test
@@ -182,7 +176,7 @@ public class ExamCommandsTest {
         }
         assertCommandBehavior("clearexams", ClearExamsCommand.MESSAGE_SUCCESS,
                 ExamBook.empty(), true,
-                Collections.emptyList(), true);
+                Collections.emptyList());
     }
 
     @Test
@@ -199,7 +193,7 @@ public class ExamCommandsTest {
         assertCommandBehavior("deleteexam 2",
                 String.format(DeleteExamCommand.MESSAGE_DELETE_EXAM_SUCCESS, e2),
                 expected, true,
-                expected.getAllExam().immutableListView(), true);
+                expected.getAllExam().immutableListView());
     }
 
     @Test
@@ -245,7 +239,7 @@ public class ExamCommandsTest {
         assertCommandBehavior("editexam 2 p/n e/Exam 4 s/Subject 4 d/01-02-2018 dt/Held in 4",
                 String.format(EditExamCommand.MESSAGE_EDIT_EXAM_SUCCESS, e2, e4),
                 expected, true,
-                expected.getAllExam().immutableListView(), true);
+                expected.getAllExam().immutableListView());
     }
 
     @Test
@@ -762,7 +756,7 @@ public class ExamCommandsTest {
 
         assertCommandBehavior("delete 2",
                 Messages.MESSAGE_EXAM_NOT_IN_EXAMBOOK, examBook, false,
-                Collections.emptyList(), false);
+                Collections.emptyList());
     }
 
     @Test
