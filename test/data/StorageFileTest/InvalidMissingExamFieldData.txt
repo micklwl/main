@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<AddressBook>
+    <persons>
+        <name>John Doe</name>
+        <phone isPrivate="false">98765432</phone>
+        <email isPrivate="false">johnd@gmail.com</email>
+        <address isPrivate="false">John street, block 123, #01-01</address>
+        <exams isPrivate="false">
+            <examName>Math Midterms</examName>
+            <examDate>01-12-2018</examDate>
+            <examStartTime>09:00</examStartTime>
+            <examEndTime>10:00</examEndTime>
+            <examDetails>Held in MPSH</examDetails>
+        </exams>
+        <fees isPrivate="true">0.0</fees>
+        <account>
+            <username>user</username>
+            <privilege>Basic</privilege>
+        </account>
+    </persons>
+    <password>newPassword</password>
+</AddressBook>
