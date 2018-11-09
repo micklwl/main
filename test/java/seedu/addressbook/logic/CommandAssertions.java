@@ -226,11 +226,9 @@ public class CommandAssertions {
 
     /**
      * Executes the command and confirms that the result messages are correct and
-     * also confirms that the following two parts of the Logic object's state are as expected:<br>
+     * also confirms that the following part of the Logic object's state are as expected:<br>
      *      - the internal statistics book data are same as those in the {@code expectedStatisticsBook} <br>
      *
-     *      if the command will write to file
-     *      - the storage file content matches data in {@code expectedStatisticsBook} <br>
      */
     public static void assertCommandBehavior(String inputCommand,
                                              String expectedStatusMessage,
