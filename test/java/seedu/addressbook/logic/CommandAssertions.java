@@ -321,7 +321,7 @@ public class CommandAssertions {
 
     /**
      * Confirms the 'invalid argument index number behaviour' for the given command
-     * targeting a single person in the last shown list, using visible index.
+     * targeting a single object in the last shown list, using visible index.
      * Used for commands in the form of COMMAND_WORD PREFIX INDEX SUFFIX
      * PREFIX and SUFFIX can be empty
      * @param commandWord of the command.
@@ -339,7 +339,7 @@ public class CommandAssertions {
 
     /**
      * Confirms the 'invalid argument index number behaviour' for the given command array
-     * targeting a single person in the last shown list, using visible index.
+     * targeting a single object in the last shown list, using visible index.
      *
      * @param commands to test assuming it targets a single person in the last shown list based on visible index.
      * @param targetType to check which list the command is targeting
