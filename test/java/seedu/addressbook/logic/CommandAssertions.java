@@ -157,12 +157,9 @@ public class CommandAssertions {
 
     /**
      * Executes the command and confirms that the result messages are correct and
-     * also confirms that the following three parts of the Logic object's state are as expected:<br>
+     * also confirms that the following two parts of the Logic object's state are as expected:<br>
      *      - the internal address book data are same as those in the {@code expectedAddressBook} <br>
      *      - the internal 'last shown list' matches the {@code lastShownList} <br>
-     *
-     *      if the command will write to file
-     *      - the storage file content matches data in {@code expectedAddressBook} <br>
      */
     public static void assertCommandBehavior(String inputCommand,
                                              String expectedStatusMessage,
@@ -202,12 +199,9 @@ public class CommandAssertions {
 
     /**
      * Executes the command and confirms that the result messages are correct and
-     * also confirms that the following three parts of the Logic object's state are as expected:<br>
+     * also confirms that the following two parts of the Logic object's state are as expected:<br>
      *      - the internal exam book data are same as those in the {@code expectedExamBook} <br>
      *      - the internal 'last shown list' matches the {@code lastShownList} <br>
-     *
-     *      if the command will write to file
-     *      - the storage file content matches data in {@code expectedExamBook} <br>
      */
     public static void assertCommandBehavior(String inputCommand,
                                              String expectedStatusMessage,
@@ -278,15 +272,11 @@ public class CommandAssertions {
 
     /**
      * Executes the command and confirms that the result messages are correct and
-     * also confirms that the following six parts of the Logic object's state are as expected:<br>
+     * also confirms that the following four parts of the Logic object's state are as expected:<br>
      *     - the internal address book data are same as those in the {@code expectedAddressBook} <br>
      *     - the internal exam book data are same as those in the {@code expectedExamBook} <br>
      *     - the internal 'last shown list' matches the {@code lastShownList} <br>
      *     - the internal 'last shown exam list' matches the {@code lastShownExamList} <br>
-     *
-     *     if the command will write to file
-     *     - the storage file content matches data in {@code expectedAddressBook} <br>
-     *     - the storage exam file content matches data in {@code expectedExamBook} <br>
      */
     public static void assertCommandBehavior(String inputCommand,
                                              String expectedStatusMessage,
