@@ -27,7 +27,7 @@ public class AdaptedExamBook {
     public AdaptedExamBook() {}
 
     /**
-     * Converts a given AddressBook into this class for JAXB use.
+     * Converts a given ExamBook into this class for JAXB use.
      *
      * @param source future changes to this will not affect the created AdaptedExamBook
      */
